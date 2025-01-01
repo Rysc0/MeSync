@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css" />
+    <style>
+        select {
+            height: 30px;
+        }
+    </style>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+</head>
+
+<body>
+    <div id="estimate">
+        <form id="estimateForm">
+            <label for="Board">Board to mirror in:</label>
+            <select id="board" name="boardSelect"></select>
+            <label for="list" name="listSelect">List on board to mirror in:</label>
+            <select id="list" name="listSelect"></select>
+            <button type="submit">Save</button>
+        </form>
+        <script src="save.js"></script>
+
+        <h3>This card is being synced to:</h3>
+        <table id="entriesTable" border="1">
+            <thead>
+                <tr>
+                    <th>Board</th>
+                    <th>List</th>
+                </tr>
+            </thead>
+            <tbody id="entriesTableBody">
+                <!-- Entries will be dynamically added here -->
+            </tbody>
+        </table>
+        <form id="Remvoe">
+            <button type="submit">Remove this card from sync</button>
+        </form>
+    </div>
+</body>
+
+</html>
