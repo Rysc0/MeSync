@@ -25,5 +25,8 @@ def webhook():
 def example():
     return render_template('index.html')
 
+@app.route('/test', methods=['GET', 'POST'])  # Accepts only POST requests
+def test():
+    return render_template('test.html')
 
 app.run(host='0.0.0.0', port=8123)
