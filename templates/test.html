@@ -14,10 +14,10 @@
     <div id="estimate">
         <form id="estimateForm">
             <label for="Board">Board to mirror in:</label>
-            <select id="board" name="boardSelect"></select>
+            <select id="boardDropdown" name="boardSelect" style="width: 150px;"></select>
             <label for="list" name="listSelect">List on board to mirror in:</label>
-            <select id="list" name="listSelect"></select>
-            <button type="submit">Save</button>
+            <select id="listDropdown" name="listSelect" style="width: 150px;"></select>
+            <button type="submit" style="background-color: green; color: white;">Save</button>
         </form>
         <script src="save.js"></script>
 
@@ -34,7 +34,7 @@
             </tbody>
         </table>
         <form id="Remvoe">
-            <button type="submit">Remove this card from sync</button>
+            <button type="submit" style="background-color: red; color: white;">Remove this card from sync</button>
         </form>
     </div>
 </body>
