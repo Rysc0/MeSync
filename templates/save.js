@@ -7,7 +7,7 @@
 // var t = TrelloPowerUp.iframe();
 
 // t.get()
-
+const t = window.TrelloPowerUp.iframe();
 document.addEventListener("DOMContentLoaded", function () {
   const dropdown = document.getElementById('boardDropdown');
   const dropdownList = document.getElementById('listDropdown');
