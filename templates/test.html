@@ -17,7 +17,7 @@
             <select id="boardDropdown" name="boardSelect" style="width: 150px;"></select>
             <label for="list" name="listSelect">List on board to mirror in:</label>
             <select id="listDropdown" name="listSelect" style="width: 150px;"></select>
-            <button type="submit" style="background-color: green; color: white;">Save</button>
+            <button type="submit" class="mod-primary">Save</button>
         </form>
         <script src="save.js"></script>
 
@@ -31,10 +31,14 @@
             </thead>
             <tbody id="entriesTableBody">
                 <!-- Entries will be dynamically added here -->
+                 <tr>
+                    <td>Diplomski</td>
+                    <td>Backlog</td>
+                 </tr>
             </tbody>
         </table>
-        <form id="Remvoe">
-            <button type="submit" style="background-color: red; color: white;">Remove this card from sync</button>
+        <form id="Remove">
+            <button type="submit" class="mod-danger">Remove this card from sync</button>
         </form>
     </div>
 </body>

@@ -7,6 +7,8 @@
 // var t = TrelloPowerUp.iframe();
 
 // t.get()
+
+// Loads up the Trello iframe and applies the styling
 const t = window.TrelloPowerUp.iframe();
 document.addEventListener("DOMContentLoaded", function () {
   const dropdown = document.getElementById('boardDropdown');
