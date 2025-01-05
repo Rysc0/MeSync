@@ -45,6 +45,30 @@ def getCard(cardID):
     print(response.json())
     return response.json()
 
+
+def getBoards():
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "GET",
+        BASEURL + "members/me/boards?key={}&token={}".format(API_KEY, TOKEN),
+        headers=headers,
+        params=query
+    )
+
+    # Filter out the deleted/unactive boards so only active ones get returned
+    activeBoards = [x for x in response.json() if x["closed"] == False]
+
+    return activeBoards
+
+
 def createMirrorCard(listID, originalCardID):
     return
 
