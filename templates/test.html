@@ -19,7 +19,8 @@
             <select id="listDropdown" name="listSelect" style="width: 150px;"></select>
             <button type="submit" class="mod-primary">Save</button>
         </form>
-        <script src="save.js"></script>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='/js/save.js') }}"></script>
 
         <h3>This card is being synced to:</h3>
         <table id="entriesTable" style="border: 1; width: 100%;">
