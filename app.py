@@ -29,4 +29,8 @@ def example():
 def test():
     return render_template('test.html')
 
+@app.route('/getBoards', methods=['GET'])  # Accepts only POST requests
+def getBoards():
+    return core.getBoards()
+
 app.run(host='0.0.0.0', port=8123)
