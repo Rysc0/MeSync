@@ -37,7 +37,7 @@ def getBoards():
 @app.route('/getFilteredListsOnBoard', methods=['GET'])  # Accepts only POST requests
 def getFilteredListOnBoard():
     boardID = request.args.get('boardID')
-    filter = request.args.get('filter')
+    filter = 'open'
     return core.getFilteredListsOnBoard(boardID, filter)
 
 app.run(host='0.0.0.0', port=8123)
