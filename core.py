@@ -69,6 +69,26 @@ def getBoards():
     return activeBoards
 
 
+
+def getFilteredListsOnBoard(boardID, filter="open"):
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "GET",
+        BASEURL + "boards/{}/lists/{}?key={}&token={}".format(boardID, filter, API_KEY, TOKEN, ),
+        headers=headers,
+        params=query
+    )
+
+    return response.json()
+
 def createMirrorCard(listID, originalCardID):
     return
 
