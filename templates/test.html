@@ -17,10 +17,10 @@
             <select id="boardDropdown" name="boardSelect" style="width: 150px;"></select>
             <label for="list" name="listSelect">List on board to mirror in:</label>
             <select id="listDropdown" name="listSelect" style="width: 150px;"></select>
-            <button type="submit" class="mod-primary">Save</button>
+            <button id="saveButton" type="submit" class="mod-primary">Save</button>
         </form>
 
-        <script type="text/javascript" src="{{ url_for('static', filename='/js/save.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='/js/save.js') }}" crossorigin="anonymous"></script>
 
         <h3>This card is being synced to:</h3>
         <table id="entriesTable" style="border: 1; width: 100%;">
