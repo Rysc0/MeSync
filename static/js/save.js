@@ -7,7 +7,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   const dropdown = document.getElementById('boardDropdown');
+  // Improvement for later
+  // const defaultBoard = document.createElement('option');
+  // defaultBoard.value = "Select";
+  // defaultBoard.text = "Select the board";
+  // dropdown.appendChild(defaultBoard);
   const dropdownList = document.getElementById('listDropdown');
+  // const defaultList = document.createElement('option');
+  // defaultList.value = '-';
+  // defaultList.text = '-';
+  // dropdownList.appendChild(defaultList);
 
 
 
