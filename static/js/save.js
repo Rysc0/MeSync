@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // defaultList.text = '-';
   // dropdownList.appendChild(defaultList);
 
+  const saveButton = document.getElementById('saveButton');
 
 
   async function getLists() {
@@ -63,4 +64,53 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+
+  // Function to handle the save button click
+  async function saveData() {
+    const selectedBoard = dropdown.value;
+    const selectedList = dropdownList.value;
+
+    if (!selectedBoard || !selectedList) {
+      alert('Please select both a board and a list before saving.');
+      return;
+    }
+
+    const tempid = '6760b2c95e76947778ce0dac'
+
+    const payload = {
+      listID: selectedList,
+      originalCardID: tempid
+    };
+    // console.log(JSON.stringify(payload));
+    
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8123/createMirrorCard`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (response.ok) {
+        alert('Selection saved successfully!');
+      } else {
+        console.error('Error saving data:', response.statusText);
+        alert('Failed to save selection. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during save request:', error);
+      alert('An error occurred while saving. Please try again.');
+    }
+  }
+
+  // Add event listener to the save button
+  saveButton.addEventListener('click', saveData);
+
+});
+
+
+t.render(function () {
+  t.sizeTo("#save").done();
 });
