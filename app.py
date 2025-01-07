@@ -40,4 +40,12 @@ def getFilteredListOnBoard():
     filter = 'open'
     return core.getFilteredListsOnBoard(boardID, filter)
 
-app.run(host='0.0.0.0', port=8123)
+
+@app.route('/createMirrorCard', methods=['POST'])
+def createMirrorCard():
+    req = request.get_json()
+    idList = req["listID"]
+    idCardSource = req["originalCardID"]
+    return core.createMirrorCard(listID=idList, originalCardID=idCardSource)
+
+app.run(host='0.0.0.0', port=8123, debug=True)
