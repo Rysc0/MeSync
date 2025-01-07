@@ -90,7 +90,25 @@ def getFilteredListsOnBoard(boardID, filter="open"):
     return response.json()
 
 def createMirrorCard(listID, originalCardID):
-    return
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    payload = BASEURL + "cards?key={}&token={}&idList={}&idCardSource={}&keepFromSource='all'".format(API_KEY, TOKEN, listID, originalCardID)
+
+    response = requests.request(
+        "POST",
+        BASEURL + "cards?key={}&token={}&idList={}&idCardSource={}&keepFromSource='all'".format(API_KEY, TOKEN, listID, originalCardID),
+        headers=headers,
+        params=query
+    )
+
+    return response.json()
 
 def checkDifferences():
     """
