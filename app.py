@@ -46,6 +46,17 @@ def createMirrorCard():
     req = request.get_json()
     idList = req["listID"]
     idCardSource = req["originalCardID"]
-    return core.createMirrorCard(listID=idList, originalCardID=idCardSource)
+    return core.createMirrorCard(listID=idList, idCardSource=idCardSource)
+
+
+@app.route('/webhook', methods=['POST'])
+def receiveChange():
+    req = request.get_json()
+    action = req["action"]
+    model = req["model"]
+    webhook = req["webhook"]
+    return
 
 app.run(host='0.0.0.0', port=8123, debug=True)
+
+
