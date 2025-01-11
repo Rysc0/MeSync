@@ -14,9 +14,10 @@ def loadConfig():
         data = json.load(cfg) 
         API_KEY = data["API_KEY"]
         TOKEN = data["TOKEN"]
-    return API_KEY, TOKEN
+        CALLBACKURL = data["CALLBACKURL"]
+    return API_KEY, TOKEN, CALLBACKURL
 
-API_KEY, TOKEN = loadConfig()
+API_KEY, TOKEN, CALLBACKURL = loadConfig()
 
 
 ID = "6760b2c95e76947778ce0dac"
@@ -89,7 +90,7 @@ def getFilteredListsOnBoard(boardID, filter="open"):
 
     return response.json()
 
-def createMirrorCard(listID, originalCardID):
+def createMirrorCard(listID, idCardSource):
     headers = {
         "Accept": "application/json"
     }
@@ -99,11 +100,9 @@ def createMirrorCard(listID, originalCardID):
         'token': TOKEN
     }
 
-    payload = BASEURL + "cards?key={}&token={}&idList={}&idCardSource={}&keepFromSource='all'".format(API_KEY, TOKEN, listID, originalCardID)
-
     response = requests.request(
         "POST",
-        BASEURL + "cards?key={}&token={}&idList={}&idCardSource={}&keepFromSource='all'".format(API_KEY, TOKEN, listID, originalCardID),
+        BASEURL + "cards?key={}&token={}&idList={}&idCardSource={}&keepFromSource=all".format(API_KEY, TOKEN, listID, idCardSource),
         headers=headers,
         params=query
     )
@@ -154,6 +153,30 @@ def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachme
     )
     print("Card updated!")
     #print(response.json())
+    return response.json()
+
+
+def createWebhook(cardID):
+    url = "https://api.trello.com/1/webhooks/"
+
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'callbackURL': CALLBACKURL,
+        'idModel': cardID,
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "POST",
+        url,
+        headers=headers,
+        params=query
+    )
+
     return response.json()
 
 
