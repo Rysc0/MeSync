@@ -20,9 +20,6 @@ def loadConfig():
 API_KEY, TOKEN, CALLBACKURL = loadConfig()
 
 
-ID = "6760b2c95e76947778ce0dac"
-
-
 BASEURL = "https://api.trello.com/1/"
 
 
@@ -90,6 +87,7 @@ def getFilteredListsOnBoard(boardID, filter="open"):
 
     return response.json()
 
+
 def createMirrorCard(listID, idCardSource):
     headers = {
         "Accept": "application/json"
@@ -106,8 +104,42 @@ def createMirrorCard(listID, idCardSource):
         headers=headers,
         params=query
     )
+    # check if original/current card has a webhook already
+    originalCardWebhook = createWebhook(idCardSource)
+    # originalCardWebhook = {'id':'2356234354'}
+    print("original webhook: ", originalCardWebhook['id'])
+
+
+    mirroredCardId = response.json()["id"]
+
+    mirroredCardWebhook = createWebhook(mirroredCardId)
+    # mirroredCardWebhook = {'id': '11111111'}
+    print("mirrored webhook: ", mirroredCardWebhook['id'])
+
+    if originalCardWebhook:
+        # create a correct data structure key: [value1, value2,...]
+        new_data = {
+            f"{originalCardWebhook['id']}": [
+                f"{mirroredCardWebhook['id']}"
+            ],
+            f"{mirroredCardWebhook['id']}": [
+                f"{originalCardWebhook['id']}"
+            ]
+        }
+
+        with open('database.json', 'r') as db:
+            data = json.load(db)
+        # error here, data is a dict, not a list
+        for key, value in new_data.items():
+            data[key] = value
+
+        with open('database.json', 'w') as file:
+            json.dump(data, file, indent=4)
 
     return response.json()
+
+def syncronizeCards():
+    return
 
 def checkDifferences():
     """
