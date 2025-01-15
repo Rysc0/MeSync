@@ -104,11 +104,25 @@ def createMirrorCard(listID, idCardSource):
         headers=headers,
         params=query
     )
-    # check if original/current card has a webhook already
-    originalCardWebhook = createWebhook(idCardSource)
-    # originalCardWebhook = {'id':'2356234354'}
-    print("original webhook: ", originalCardWebhook['id'])
 
+    originalCardMirrors = []
+
+    # check if original/current card has a webhook already
+    with open('database.json', 'r') as db:
+        data = json.load(db)
+
+
+    if idCardSource not in data['cards'].keys():
+        originalCardWebhookid = createWebhook(idCardSource)['id']
+        # originalCardWebhookid = {'id':'2356234354'}
+        print("original webhook: ", originalCardWebhookid)
+
+    else:
+        originalCardWebhookid = data['cards'][idCardSource]['cardWebhook']
+        try:
+            originalCardMirrors = data['cards'][idCardSource]['mirroredCards']
+        except:
+            originalCardMirrors = []
 
     mirroredCardId = response.json()["id"]
 
@@ -116,22 +130,27 @@ def createMirrorCard(listID, idCardSource):
     # mirroredCardWebhook = {'id': '11111111'}
     print("mirrored webhook: ", mirroredCardWebhook['id'])
 
-    if originalCardWebhook:
-        # create a correct data structure key: [value1, value2,...]
+
+    # create a correct data structure key: [value1, value2,...]
+    if originalCardWebhookid in data['cards'].keys():
+        data[originalCardWebhookid]['mirroredCards'].append(mirroredCardId)
+        data[mirroredCardWebhook['id']]['mirroredCards'].append(originalCardWebhookid)
+    else:
+        originalCardMirrors.append(mirroredCardId)
         new_data = {
-            f"{originalCardWebhook['id']}": [
-                f"{mirroredCardWebhook['id']}"
-            ],
-            f"{mirroredCardWebhook['id']}": [
-                f"{originalCardWebhook['id']}"
-            ]
+            f"{idCardSource}": {
+                "cardWebhook": f"{originalCardWebhookid}",
+                "mirroredCards": originalCardMirrors
+            },
+            f"{mirroredCardId}": {
+                "cardWebhook": f"{mirroredCardWebhook['id']}",
+                "mirroredCards": [idCardSource]
+            }
         }
 
-        with open('database.json', 'r') as db:
-            data = json.load(db)
         # error here, data is a dict, not a list
         for key, value in new_data.items():
-            data[key] = value
+            data['cards'][key] = value
 
         with open('database.json', 'w') as file:
             json.dump(data, file, indent=4)
