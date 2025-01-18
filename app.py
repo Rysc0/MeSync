@@ -52,10 +52,8 @@ def createMirrorCard():
 @app.route('/webhook', methods=['POST'])
 def receiveChange():
     req = request.get_json()
-    action = req["action"]
-    model = req["model"]
-    webhook = req["webhook"]
-    return
+    return core.syncronizeCards(req)
+
 
 app.run(host='0.0.0.0', port=8123, debug=True)
 

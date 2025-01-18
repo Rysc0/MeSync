@@ -157,8 +157,21 @@ def createMirrorCard(listID, idCardSource):
 
     return response.json()
 
-def syncronizeCards():
-    return
+def syncronizeCards(req):
+    action = req["action"]
+    model = req["model"]
+    webhook = req["webhook"]
+
+    changedCardId = model['id']
+    mirroredCardsList = database['cards'][changedCardId]['mirroredCards']
+
+    if action["type"] == 'updateCard':
+
+        if action['display']['translationKey'] == 'action_renamed_card':
+            for cardId in mirroredCardsList:
+               return updateCard(cardId, name=model['name'])
+
+
 
 def checkDifferences():
     """
