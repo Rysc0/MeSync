@@ -1,7 +1,6 @@
 import requests
 import json
-from jsondiff import diff
-
+from datetime import datetime, timedelta
 
 with open("webhookResponse.json") as wr:
     webhookResponse = json.load(wr)
@@ -162,33 +161,85 @@ def syncronizeCards(req):
     model = req["model"]
     webhook = req["webhook"]
 
+    responses = []
+
     changedCardId = model['id']
+
     mirroredCardsList = database['cards'][changedCardId]['mirroredCards']
 
     if action["type"] == 'updateCard':
 
         if action['display']['translationKey'] == 'action_renamed_card':
             for cardId in mirroredCardsList:
-               return updateCard(cardId, name=model['name'])
+                response = updateCard(cardId, name=model['name'])
+                responses.append(response)
+            return responses
 
+        if action['display']['translationKey'] == 'action_changed_description_of_card':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, desc=model['desc'])
+                responses.append(response)
+            return responses
 
+        if action['display']['translationKey'] == 'action_added_a_due_date':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, due=model['due'])
+                responses.append(response)
+            return responses
 
-def checkDifferences():
-    """
-    Returns differences between newly updated card and the outdated mirrored card which needs to receive update.
-    """
-    updatedModel = webhookResponse["model"]
+        if action['display']['translationKey'] == 'action_removed_a_due_date':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, due='null')
+                responses.append(response)
+            return responses
 
-    # find already mirrored cards for this card
-    if updatedModel["id"] in database:
-        mirroredCardID = database[updatedModel["id"]]
-        mirroredCardModel = getCard(mirroredCardID)
+        if action['display']['translationKey'] == 'action_changed_a_due_date':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, due=model['due'])
+                responses.append(response)
+            return responses
 
-        difference = diff(mirroredCardModel, updatedModel)
-        updateCard(mirroredCardID, desc="this is new desc", name="this is new name")
+        if action['display']['translationKey'] == 'action_added_a_start_date':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, start=model['start'])
+                responses.append(response)
+            return responses
 
-    return
+        if action['display']['translationKey'] == 'action_removed_a_start_date':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, start='null')
+                responses.append(response)
+            return responses
 
+        if action['display']['translationKey'] == 'action_changed_a_start_date':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, start=model['start'])
+                responses.append(response)
+            return responses
+
+        if action['display']['translationKey'] == 'action_marked_the_due_date_complete':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, dueComplete=str(model['dueComplete']).lower())
+                responses.append(response)
+            return responses
+
+        if action['display']['translationKey'] == 'action_marked_the_due_date_incomplete':
+            for cardId in mirroredCardsList:
+                response = updateCard(cardId, dueComplete=str(model['dueComplete']).lower())
+                responses.append(response)
+            return responses
+
+    # if action['type'] == 'commentCard':
+    #     if action['display']['translationKey'] == 'action_comment_on_card':
+    #         cardLastActivity = datetime.strptime(model['dateLastActivity'], '%Y-%m-%dT%H:%M:%S.%fZ')
+    #         currentTime = datetime.now()
+    #         if (currentTime - cardLastActivity) < timedelta(seconds=1):
+    #             return {"Error": "this change already happened"}
+    #
+    #         for cardId in mirroredCardsList:
+    #             response = addCommentToCard(cardID=cardId, comment=action['display']['entities']['comment']['text'])
+    #             responses.append(response)
+    #         return responses
 
 
 def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachmentCover=None, idList=None, idLabels=None,
@@ -220,6 +271,30 @@ def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachme
     return response.json()
 
 
+
+def addCommentToCard(cardID, comment):
+    url = "https://api.trello.com/1/cards/{}/actions/comments".format(cardID)
+
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'text': comment,
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "POST",
+        url,
+        headers=headers,
+        params=query
+    )
+
+    print("Added comment")
+    return response.json()
+
 def createWebhook(cardID):
     url = "https://api.trello.com/1/webhooks/"
 
@@ -240,7 +315,7 @@ def createWebhook(cardID):
         headers=headers,
         params=query
     )
-
+    print('Webhook created with id = ', response.json()['id'])
     return response.json()
 
 
