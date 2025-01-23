@@ -229,17 +229,32 @@ def syncronizeCards(req):
                 responses.append(response)
             return responses
 
-    # if action['type'] == 'commentCard':
-    #     if action['display']['translationKey'] == 'action_comment_on_card':
-    #         cardLastActivity = datetime.strptime(model['dateLastActivity'], '%Y-%m-%dT%H:%M:%S.%fZ')
-    #         currentTime = datetime.now()
-    #         if (currentTime - cardLastActivity) < timedelta(seconds=1):
-    #             return {"Error": "this change already happened"}
-    #
-    #         for cardId in mirroredCardsList:
-    #             response = addCommentToCard(cardID=cardId, comment=action['display']['entities']['comment']['text'])
-    #             responses.append(response)
-    #         return responses
+    if action['type'] == 'commentCard':
+        if action['display']['translationKey'] == 'action_comment_on_card':
+            # get the card that comment was made in
+            numberOfComments = int(model['badges']['comments'])
+            # get the numbers for mirrored cards
+            cardsToUpdate = []
+            for cardId in mirroredCardsList:
+                _card = getCard(cardId)
+                if int(_card['badges']['comments']) != numberOfComments:
+                    cardsToUpdate.append(cardId)
+
+            if len(cardsToUpdate) == 0:
+                print('COMMENTS UP TO DATE')
+                return {'Error': "Comments already up to date. Same number of comments on all cards"}
+
+            for cardId in cardsToUpdate:
+                response = addCommentToCard(cardID=cardId, comment=action['display']['entities']['comment']['text'])
+                responses.append(response)
+            return responses
+    
+    if action['type'] == 'updateComment':
+        commentID = action['data']['action']['id']
+        commentText = action['data']['action']['text']
+
+
+
 
 
 def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachmentCover=None, idList=None, idLabels=None,
