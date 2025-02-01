@@ -161,6 +161,9 @@ def syncronizeCards(req):
     model = req["model"]
     webhook = req["webhook"]
 
+    with open('database.json', 'r') as _db:
+        _database = json.load(_db)
+
     responses = []
 
     changedCardId = model['id']
@@ -231,6 +234,11 @@ def syncronizeCards(req):
 
     if action['type'] == 'commentCard':
         if action['display']['translationKey'] == 'action_comment_on_card':
+
+            _database['cards'][changedCardId]['comments'].append(action['id'])
+            with open('database.json', 'w') as file:
+                json.dump(_database, file, indent=4)
+
             # get the card that comment was made in
             numberOfComments = int(model['badges']['comments'])
             # get the numbers for mirrored cards
@@ -246,6 +254,9 @@ def syncronizeCards(req):
 
             for cardId in cardsToUpdate:
                 response = addCommentToCard(cardID=cardId, comment=action['display']['entities']['comment']['text'])
+                _database['cards'][cardId]['comments'].append(response['id'])
+                with open('database.json', 'w') as file:
+                    json.dump(_database, file, indent=4)
                 responses.append(response)
             return responses
     
@@ -332,54 +343,3 @@ def createWebhook(cardID):
     )
     print('Webhook created with id = ', response.json()['id'])
     return response.json()
-
-
-def updateCardAction(webhookRequest):
-    data = webhookRequest["action"]["data"]
-
-    changedProperty = list(data["old"].keys())[0]
-
-    # find all associated cards to be updated
-    cardID = database[webhookRequest["model"]["id"]]
-
-    match changedProperty:
-        case "name":
-            updateCard(cardID, name=data["card"][changedProperty])
-
-        case "desc":
-            updateCard(cardID, desc=data["card"][changedProperty])
-
-        case "closed":
-            updateCard(cardID, closed=str(data["card"][changedProperty]).lower())
-
-        case "idMembers":
-            updateCard(cardID)
-        case "idAttachmentCover":
-            updateCard(cardID)
-        case "idList":
-            updateCard(cardID)
-        case "idLabels":
-            updateCard(cardID)
-        case "idBoard":
-            updateCard(cardID)
-        case "pos":
-            updateCard(cardID)
-        case "due":
-            updateCard(cardID)
-        case "start":
-            updateCard(cardID)
-        case "dueComplete":
-            updateCard(cardID)
-        case "subscribed":
-            updateCard(cardID)
-        case "address":
-            updateCard(cardID)
-        case "locationName":
-            updateCard(cardID)
-        case "coordinates":
-            updateCard(cardID)
-        case "cover":
-            updateCard(cardID)
-        case _:
-            print()
-    return
