@@ -2,9 +2,6 @@ import requests
 import json
 from datetime import datetime, timedelta
 
-with open("webhookResponse.json") as wr:
-    webhookResponse = json.load(wr)
-
 with open("database.json") as db:
     database = json.load(db)
 
