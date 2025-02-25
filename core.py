@@ -29,31 +29,24 @@ def get_db_user():
     users= models.User.query.all()
     for user in users:
         print(f"This is user with id = {user.id}")
+
+    comments = models.Comment.query.all()
+    for comment in comments:
+        print(f'This is a comment with id = {comment.id}')
+
+    webhooks = models.Webhook.query.all()
+    for webhook in webhooks:
+        print(f'This is a webhook with id = {webhook.id}')
+
+    mirrors = models.Mirror.query.all()
+    for mirror in mirrors:
+        print(f'This is a mirror with id = {mirror.id}, original card = {mirror.original_card_id} and mirror = {mirror.mirror_card_id}')
+
+
+    cards = models.Card.query.all()
+    for card in cards:
+        print(f'This is card with id = {card.id}')
     return print("done")
-
-def db_connect():
-    engine = create_engine(DATABASEURL)
-
-    # Test connection
-    with engine.connect() as connection:
-        print("Connected to PostgreSQL!")
-
-    # Reflect the existing database
-    metadata = MetaData()
-    metadata.reflect(bind=engine)
-
-    # Automap base (this dynamically generates ORM models)
-    Base = automap_base(metadata=metadata)
-    Base.prepare()
-
-    # Create a session
-    SessionLocal = sessionmaker(bind=engine)
-    session = SessionLocal()
-
-    return session
-
-
-
 
 
 BASEURL = "https://api.trello.com/1/"
