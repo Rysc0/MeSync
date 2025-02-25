@@ -2,18 +2,58 @@ import requests
 import json
 from datetime import datetime, timedelta
 
+# database imports
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.automap import automap_base
+
+import models
+#
+
 with open("database.json") as db:
     database = json.load(db)
 
 def loadConfig():
     with open("config.json", "r") as cfg:
-        data = json.load(cfg) 
+        data = json.load(cfg)
         API_KEY = data["API_KEY"]
         TOKEN = data["TOKEN"]
         CALLBACKURL = data["CALLBACKURL"]
-    return API_KEY, TOKEN, CALLBACKURL
+        DATABASEURL = data["DATABASEURL"]
+    return API_KEY, TOKEN, CALLBACKURL, DATABASEURL
 
-API_KEY, TOKEN, CALLBACKURL = loadConfig()
+API_KEY, TOKEN, CALLBACKURL, DATABASEURL = loadConfig()
+
+
+def get_db_user():
+    users= models.User.query.all()
+    for user in users:
+        print(f"This is user with id = {user.id}")
+    return print("done")
+
+def db_connect():
+    engine = create_engine(DATABASEURL)
+
+    # Test connection
+    with engine.connect() as connection:
+        print("Connected to PostgreSQL!")
+
+    # Reflect the existing database
+    metadata = MetaData()
+    metadata.reflect(bind=engine)
+
+    # Automap base (this dynamically generates ORM models)
+    Base = automap_base(metadata=metadata)
+    Base.prepare()
+
+    # Create a session
+    SessionLocal = sessionmaker(bind=engine)
+    session = SessionLocal()
+
+    return session
+
+
+
 
 
 BASEURL = "https://api.trello.com/1/"
@@ -100,6 +140,11 @@ def createMirrorCard(listID, idCardSource):
         headers=headers,
         params=query
     )
+
+
+    # check if the card already has a webhook and use that
+
+    # else, create webhook
 
     originalCardMirrors = []
 
