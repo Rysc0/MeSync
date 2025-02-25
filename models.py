@@ -22,7 +22,7 @@ class Card(db.Model):
 
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
-    creator = Column(String, ForeignKey("user.id"), nullable=False)
+    creator_id = Column(String, ForeignKey("user.id"), nullable=False)
 
     creator = relationship("User", back_populates="cards")
     comments = relationship("Comment", back_populates="card")
