@@ -1,17 +1,11 @@
 import requests
 import json
-from datetime import datetime, timedelta
 
 # database imports
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.automap import automap_base
-
 import models
 #
-
-with open("database.json") as db:
-    database = json.load(db)
+# with open("database.json") as db:
+#     database = json.load(db)
 
 def loadConfig():
     with open("config.json", "r") as cfg:
@@ -135,59 +129,37 @@ def createMirrorCard(listID, idCardSource):
     )
 
 
-    # check if the card already has a webhook and use that
+    # check if the card already has a webhook
+    webhook_orig = models.Webhook.query.filter_by(card_id=idCardSource).first()
+    if webhook_orig == None:
+        webhook_orig = createWebhook(idCardSource)
+        webhook_id = webhook_orig['id']
+        # webhook_orig = {"id":"webhook_TEST"}
+        new_webhook = models.Webhook(id=webhook_id, card_id=idCardSource)
+        models.db.session.add(new_webhook)
+        models.db.session.commit()
 
-    # else, create webhook
 
-    originalCardMirrors = []
-
-    # check if original/current card has a webhook already
-    with open('database.json', 'r') as db:
-        data = json.load(db)
-
-
-    if idCardSource not in data['cards'].keys():
-        originalCardWebhookid = createWebhook(idCardSource)['id']
-        # originalCardWebhookid = {'id':'2356234354'}
-        print("original webhook: ", originalCardWebhookid)
-
-    else:
-        originalCardWebhookid = data['cards'][idCardSource]['cardWebhook']
-        try:
-            originalCardMirrors = data['cards'][idCardSource]['mirroredCards']
-        except:
-            originalCardMirrors = []
-
+    # add card in cards table first
     mirroredCardId = response.json()["id"]
+    new_card = models.Card(id=mirroredCardId, name="Boris", creator_id="boris.bastek")
+    models.db.session.add(new_card)
+    models.db.session.commit()
 
+
+    # create webhook for new card
     mirroredCardWebhook = createWebhook(mirroredCardId)
+    mirror_webhook = models.Webhook(id=mirroredCardWebhook['id'], card_id=mirroredCardId)
+    models.db.session.add(mirror_webhook)
+    models.db.session.commit()
     # mirroredCardWebhook = {'id': '11111111'}
     print("mirrored webhook: ", mirroredCardWebhook['id'])
 
 
-    # create a correct data structure key: [value1, value2,...]
-    if originalCardWebhookid in data['cards'].keys():
-        data[originalCardWebhookid]['mirroredCards'].append(mirroredCardId)
-        data[mirroredCardWebhook['id']]['mirroredCards'].append(originalCardWebhookid)
-    else:
-        originalCardMirrors.append(mirroredCardId)
-        new_data = {
-            f"{idCardSource}": {
-                "cardWebhook": f"{originalCardWebhookid}",
-                "mirroredCards": originalCardMirrors
-            },
-            f"{mirroredCardId}": {
-                "cardWebhook": f"{mirroredCardWebhook['id']}",
-                "mirroredCards": [idCardSource]
-            }
-        }
-
-        # error here, data is a dict, not a list
-        for key, value in new_data.items():
-            data['cards'][key] = value
-
-        with open('database.json', 'w') as file:
-            json.dump(data, file, indent=4)
+    # add cards to Mirror table
+    new_mirror = models.Mirror(original_card_id=idCardSource , mirror_card_id=mirroredCardId)
+    models.db.session.add(new_mirror)
+    models.db.session.commit()
 
     return response.json()
 
