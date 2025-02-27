@@ -7,7 +7,6 @@ def register_routes(app, db):
 
     @app.route('/', methods=['GET', 'POST'])  # Accepts only POST requests
     def example():
-        core.get_db_user()
         return render_template('index.html')
 
     @app.route('/test', methods=['GET', 'POST'])  # Accepts only POST requests
