@@ -3,9 +3,7 @@ import json
 
 # database imports
 import models
-#
-# with open("database.json") as db:
-#     database = json.load(db)
+
 
 def loadConfig():
     with open("config.json", "r") as cfg:
@@ -168,21 +166,41 @@ def syncronizeCards(req):
     model = req["model"]
     webhook = req["webhook"]
 
-    with open('database.json', 'r') as _db:
-        _database = json.load(_db)
+    # check the changes / caching / ignoring duplicate updates
 
     responses = []
 
     changedCardId = model['id']
 
-    mirroredCardsList = database['cards'][changedCardId]['mirroredCards']
+    # get mirrored cards for the changed card
+    copied = models.Mirror.query.filter_by(original_card_id=changedCardId).all()
+    # gets the ID of the "child" card of the current card
+    # models.Mirror.query.filter_by(original_card_id=changedCardId).all()[0].mirror_card_id
+
+
+    isCopyOf = models.Mirror.query.filter_by(mirror_card_id=changedCardId).all()
+    # gets the ID of "parent" card of the changed card
+    # models.Mirror.query.filter_by(mirror_card_id=changedCardId).all()[0].original_card_id
+
+    # mirroredCardsList = database['cards'][changedCardId]['mirroredCards']
 
     if action["type"] == 'updateCard':
 
         if action['display']['translationKey'] == 'action_renamed_card':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, name=model['name'])
+            # first check the child card
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, name=model['name'])
                 responses.append(response)
+
+            # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, name=model['name'])
+                responses.append(response)
+
+            # for cardId in mirroredCardsList:
+            #     response = updateCard(cardId, name=model['name'])
+            #     responses.append(response)
+
             return responses
 
         if action['display']['translationKey'] == 'action_changed_description_of_card':
