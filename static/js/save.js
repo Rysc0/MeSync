@@ -74,8 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
       alert('Please select both a board and a list before saving.');
       return;
     }
-
-    const tempid = '6760b2c95e76947778ce0dac'
+    
+    console.log(t.card())
+    const tempid = ''
 
     const payload = {
       listID: selectedList,
