@@ -8,7 +8,7 @@ TrelloPowerUp.initialize({
         callback: function (t) {
           return t.popup({
             title: "Mirror/sync",
-            url: "test.html",
+            url: "/test.html",
           });
         },
       },
