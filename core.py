@@ -140,7 +140,8 @@ def createMirrorCard(listID, idCardSource):
 
     # add card in cards table first
     mirroredCardId = response.json()["id"]
-    new_card = models.Card(id=mirroredCardId, name="Boris", creator_id="boris.bastek")
+    card_name = response.json()['name']
+    new_card = models.Card(id=mirroredCardId, name=card_name, creator_id="boris.bastek")
     models.db.session.add(new_card)
     models.db.session.commit()
 
@@ -150,8 +151,6 @@ def createMirrorCard(listID, idCardSource):
     mirror_webhook = models.Webhook(id=mirroredCardWebhook['id'], card_id=mirroredCardId)
     models.db.session.add(mirror_webhook)
     models.db.session.commit()
-    # mirroredCardWebhook = {'id': '11111111'}
-    print("mirrored webhook: ", mirroredCardWebhook['id'])
 
 
     # add cards to Mirror table
@@ -197,66 +196,133 @@ def syncronizeCards(req):
                 response = updateCard(_card.original_card_id, name=model['name'])
                 responses.append(response)
 
-            # for cardId in mirroredCardsList:
-            #     response = updateCard(cardId, name=model['name'])
-            #     responses.append(response)
-
             return responses
 
         if action['display']['translationKey'] == 'action_changed_description_of_card':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, desc=model['desc'])
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, desc=model['desc'])
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, desc=model['desc'])
+                responses.append(response)
+
             return responses
 
         if action['display']['translationKey'] == 'action_added_a_due_date':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, due=model['due'])
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, due=model['due'])
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, due=model['due'])
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_removed_a_due_date':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, due='null')
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, due='null')
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, due='null')
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_changed_a_due_date':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, due=model['due'])
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, due=model['due'])
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, due=model['due'])
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_added_a_start_date':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, start=model['start'])
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, start=model['start'])
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, start=model['start'])
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_removed_a_start_date':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, start='null')
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, start='null')
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, start='null')
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_changed_a_start_date':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, start=model['start'])
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, start=model['start'])
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, start=model['start'])
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_marked_the_due_date_complete':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, dueComplete=str(model['dueComplete']).lower())
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, dueComplete=str(model['dueComplete']).lower())
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower())
+                responses.append(response)
+
             return responses
+
 
         if action['display']['translationKey'] == 'action_marked_the_due_date_incomplete':
-            for cardId in mirroredCardsList:
-                response = updateCard(cardId, dueComplete=str(model['dueComplete']).lower())
+
+            for _card in copied:
+                response = updateCard(_card.mirror_card_id, dueComplete=str(model['dueComplete']).lower())
                 responses.append(response)
+
+                # check the parent card
+            for _card in isCopyOf:
+                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower())
+                responses.append(response)
+
             return responses
 
+
+    # TODO: Comments will be updated later
     if action['type'] == 'commentCard':
         if action['display']['translationKey'] == 'action_comment_on_card':
 
