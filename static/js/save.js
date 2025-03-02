@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Step 3: Second API call to populate dropdown2 based on dropdown1 value
     if (selectedValue) {
-      await fetch(`http://127.0.0.1:8123/getFilteredListsOnBoard?boardID=${selectedValue}`)
+      await fetch(`http://0.0.0.0:8123/getFilteredListsOnBoard?boardID=${selectedValue}`)
         .then(response => response.json())
         .then(data => {
           populateDropdown(dropdownList, data);
