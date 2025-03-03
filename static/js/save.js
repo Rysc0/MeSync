@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Step 3: Second API call to populate dropdown2 based on dropdown1 value
     if (selectedValue) {
-      await fetch(`http://0.0.0.0:8123/getFilteredListsOnBoard?boardID=${selectedValue}`)
+      await fetch(`https://0.0.0.0:8123/getFilteredListsOnBoard?boardID=${selectedValue}`)
         .then(response => response.json())
         .then(data => {
           populateDropdown(dropdownList, data);
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   // Step 1: First API call to populate dropdown1
-  fetch('http://127.0.0.1:8123/getBoards')
+  fetch('https://0.0.0.0:8123/getBoards')
     .then(response => response.json())
     .then(data => {
       populateDropdown(dropdown, data);
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
     
 
     try {
-      const response = await fetch(`http://127.0.0.1:8123/createMirrorCard`, {
+      const response = await fetch(`https://0.0.0.0:8123/createMirrorCard`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
