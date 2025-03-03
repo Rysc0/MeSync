@@ -11,7 +11,7 @@ db = SQLAlchemy()
 def create_app():
     app = Flask(__name__, template_folder='templates')
     CORS(app)  # , origins="https://trello.com")
-    app.config['SQLALCHEMY_DATABASE_URI'] = ''
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://boris:pass@localhost/mesync'
     db.init_app(app)
 
     # imports
