@@ -1,7 +1,6 @@
 // Loads up the Trello iframe and applies the styling
 const t = window.TrelloPowerUp.iframe();
 
-
 document.addEventListener("DOMContentLoaded", function () {
 
 
@@ -113,5 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 t.render(function () {
-  t.sizeTo("#save").done();
+  console.log(t.getContext());
+  t.sizeTo('#content').done();
 });
