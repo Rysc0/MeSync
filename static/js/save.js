@@ -1,6 +1,6 @@
 // Loads up the Trello iframe and applies the styling
 const t = window.TrelloPowerUp.iframe();
-
+console.log("IFRAME")
 document.addEventListener("DOMContentLoaded", function () {
 
 
