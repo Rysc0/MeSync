@@ -1,5 +1,5 @@
 console.log("HELL")
-TrelloPowerUp.initialize({
+window.TrelloPowerUp.initialize({
   "card-buttons": function (t, options) {
     var context = t.getContext();
     console.log(JSON.stringify(context, null, 2));
@@ -10,7 +10,7 @@ TrelloPowerUp.initialize({
         callback: function (t) {
           return t.popup({
             title: "Mirror/sync",
-            url: t.signUrl("/test"),
+            url: t.signUrl("/test.html"),
           });
         },
       },

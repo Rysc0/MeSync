@@ -28,7 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Step 3: Second API call to populate dropdown2 based on dropdown1 value
     if (selectedValue) {
-      await fetch(`https://0.0.0.0:8123/getFilteredListsOnBoard?boardID=${selectedValue}`)
+      await fetch(`http://192.168.18.23:8123/getFilteredListsOnBoard?boardID=${selectedValue}`, {
+        mode: "cors"
+      })
         .then(response => response.json())
         .then(data => {
           populateDropdown(dropdownList, data);
@@ -39,7 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   // Step 1: First API call to populate dropdown1
-  fetch('https://0.0.0.0:8123/getBoards')
+  fetch('/getBoards', {
+    mode: "cors"
+  })
     .then(response => response.json())
     .then(data => {
       populateDropdown(dropdown, data);
@@ -73,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
       alert('Please select both a board and a list before saving.');
       return;
     }
-    
+
     console.log(t.card())
     const tempid = ''
 
@@ -82,15 +86,16 @@ document.addEventListener("DOMContentLoaded", function () {
       originalCardID: tempid
     };
     // console.log(JSON.stringify(payload));
-    
+
 
     try {
-      const response = await fetch(`https://0.0.0.0:8123/createMirrorCard`, {
+      const response = await fetch(`http://192.168.18.23:8123/createMirrorCard`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        mode: "cors"
       });
 
       if (response.ok) {
