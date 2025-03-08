@@ -4,20 +4,56 @@ console.log("IFRAME")
 document.addEventListener("DOMContentLoaded", function () {
 
 
-
   const dropdown = document.getElementById('boardDropdown');
-  // Improvement for later
-  // const defaultBoard = document.createElement('option');
-  // defaultBoard.value = "Select";
-  // defaultBoard.text = "Select the board";
-  // dropdown.appendChild(defaultBoard);
+  // Preselected default text
+  const defaultBoard = document.createElement('option');
+  defaultBoard.value = "Select";
+  defaultBoard.text = "Select the board";
+  dropdown.appendChild(defaultBoard);
+
+
   const dropdownList = document.getElementById('listDropdown');
-  // const defaultList = document.createElement('option');
-  // defaultList.value = '-';
-  // defaultList.text = '-';
-  // dropdownList.appendChild(defaultList);
+  // Preselected default text
+  const defaultList = document.createElement('option');
+  defaultList.value = '-';
+  defaultList.text = '-';
+  dropdownList.appendChild(defaultList);
+
 
   const saveButton = document.getElementById('saveButton');
+
+  // Add event listener to the save button
+  saveButton.addEventListener('click', saveData);
+
+
+  // Step 1: First API call to populate dropdown1
+  fetch('/getBoards', {
+    mode: "cors"
+  })
+    .then(response => response.json())
+    .then(data => {
+      populateDropdown(dropdown, data);
+      getLists()
+    })
+    .catch(error => console.error('Error fetching first API:', error));
+
+
+  // Step 2: Event listener for dropdown1 changes
+  dropdown.addEventListener('change', () => {
+    getLists()
+  });
+
+
+  // Utility function to populate a dropdown
+  function populateDropdown(dropdown, options) {
+    dropdown.innerHTML = ''; // Clear existing options
+    options.forEach(option => {
+      const opt = document.createElement('option');
+      opt.value = option.id; // Adjust based on your API response structure
+      opt.textContent = option.name; // Adjust based on your API response structure
+      dropdown.appendChild(opt);
+    });
+  }
 
 
   async function getLists() {
@@ -40,34 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 
-  // Step 1: First API call to populate dropdown1
-  fetch('/getBoards', {
-    mode: "cors"
-  })
-    .then(response => response.json())
-    .then(data => {
-      populateDropdown(dropdown, data);
-      getLists()
-    })
-    .catch(error => console.error('Error fetching first API:', error));
-
-  // Step 2: Event listener for dropdown1 changes
-  dropdown.addEventListener('change', () => {
-    getLists()
-  });
-
-  // Utility function to populate a dropdown
-  function populateDropdown(dropdown, options) {
-    dropdown.innerHTML = ''; // Clear existing options
-    options.forEach(option => {
-      const opt = document.createElement('option');
-      opt.value = option.id; // Adjust based on your API response structure
-      opt.textContent = option.name; // Adjust based on your API response structure
-      dropdown.appendChild(opt);
-    });
-  }
-
-
   // Function to handle the save button click
   async function saveData() {
     const selectedBoard = dropdown.value;
@@ -78,18 +86,17 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    console.log(t.card())
+    // console.log(t.card())
     const tempid = ''
 
     const payload = {
       listID: selectedList,
       originalCardID: tempid
     };
-    // console.log(JSON.stringify(payload));
 
 
     try {
-      const response = await fetch(`http://192.168.18.23:8123/createMirrorCard`, {
+      const response = await fetch('http://192.168.18.23:8123/createMirrorCard', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -110,8 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Add event listener to the save button
-  saveButton.addEventListener('click', saveData);
 
 });
 
