@@ -10,7 +10,7 @@ window.TrelloPowerUp.initialize({
         callback: function (t) {
           return t.popup({
             title: "Mirror/sync",
-            url: t.signUrl("/test.html"),
+            url: t.signUrl("/test"),
           });
         },
       },
