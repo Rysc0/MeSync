@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Step 3: Second API call to populate dropdown2 based on dropdown1 value
     if (selectedValue) {
-      await fetch(`http://192.168.18.23:8123/getFilteredListsOnBoard?boardID=${selectedValue}`, {
+      await fetch(`/getFilteredListsOnBoard?boardID=${selectedValue}`, {
         mode: "cors"
       })
         .then(response => response.json())
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     try {
-      const response = await fetch('http://192.168.18.23:8123/createMirrorCard', {
+      const response = await fetch('/createMirrorCard', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
