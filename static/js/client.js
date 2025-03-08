@@ -3,6 +3,7 @@ window.TrelloPowerUp.initialize({
   "card-buttons": function (t, options) {
     var context = t.getContext();
     console.log(JSON.stringify(context, null, 2));
+    console.log(`This is current card ID: ${JSON.stringify(context, null, 2).card}`)
     return [
       {
         icon: "https://github.com/walkxcode/dashboard-icons/blob/main/png/adblock.png",
