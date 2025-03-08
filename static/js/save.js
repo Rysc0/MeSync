@@ -87,7 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // console.log(t.card())
-    const tempid = ''
+    const tempid = t.getContext().card
+    console.log(`This is current card id: ${tempid}`)
 
     const payload = {
       listID: selectedList,
