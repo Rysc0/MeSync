@@ -3,15 +3,13 @@ import json
 
 # database imports
 import models
-
+from os import environ
 
 def loadConfig():
-    with open("config.json", "r") as cfg:
-        data = json.load(cfg)
-        API_KEY = data["API_KEY"]
-        TOKEN = data["TOKEN"]
-        CALLBACKURL = data["CALLBACKURL"]
-        DATABASEURL = data["DATABASEURL"]
+    API_KEY = environ.get("API_KEY")
+    TOKEN = environ.get("TOKEN")
+    CALLBACKURL = environ.get("CALLBACKURL")
+    DATABASEURL = environ.get("DATABASEURL")
     return API_KEY, TOKEN, CALLBACKURL, DATABASEURL
 
 API_KEY, TOKEN, CALLBACKURL, DATABASEURL = loadConfig()
