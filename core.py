@@ -85,6 +85,26 @@ def getBoards():
 
     return activeBoards
 
+
+
+def getBoard(boardID):
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "GET",
+        BASEURL + "boards/{}".format(boardID),
+        headers=headers,
+        params=query
+    )
+    return response.json()
+
 def getMirroredCards(cardID):
 
     mirrors = models.Mirror.query.filter_by(original_card_id = cardID).all()
@@ -94,12 +114,19 @@ def getMirroredCards(cardID):
         _mirrorID = mirror.mirror_card_id
         _card = getCard(_mirrorID)
         _cardName = _card['name']
-        _cardBoard = _card['idBoard']
+        _boardID = _card['idBoard']
+        _board = getBoard(_boardID)
+        _boardURL = _board['shortUrl']
+        _cardBoard = _board['name']
         _cardURL = _card['shortUrl']
+
         _dic = {}
         _dic['name'] = _cardName
-        _dic['idBoard'] = _cardBoard
         _dic['shortURL'] = _cardURL
+        _dic['idBoard'] = _boardID
+        _dic['boardName'] = _cardBoard
+        _dic['boardURL'] = _boardURL
+
         res[_mirrorID] = _dic
 
     json_data = json.dumps(res, indent=4)
