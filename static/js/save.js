@@ -15,15 +15,26 @@ document.addEventListener("DOMContentLoaded", function () {
   const dropdownList = document.getElementById('listDropdown');
   // Preselected default text
   const defaultList = document.createElement('option');
-  defaultList.value = '-';
-  defaultList.text = '-';
+  defaultList.value = '';
+  defaultList.text = 'Select the list';
   dropdownList.appendChild(defaultList);
+  dropdownList.disabled = true;
 
 
   const saveButton = document.getElementById('saveButton');
+  saveButton.disabled = true;
+
+  const removeButton = document.getElementById('removeButton');
+
 
   // Add event listener to the save button
   saveButton.addEventListener('click', saveData);
+
+  // Add event listener to the remove button
+  removeButton.addEventListener('click', removeCard);
+
+
+
 
 
   // Step 1: First API call to populate dropdown1
@@ -32,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
   })
     .then(response => response.json())
     .then(data => {
-      populateDropdown(dropdown, data);
+      populateBoardDropdown(dropdown, data);
       getLists()
     })
     .catch(error => console.error('Error fetching first API:', error));
@@ -45,14 +56,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
   // Utility function to populate a dropdown
-  function populateDropdown(dropdown, options) {
+  function populateBoardDropdown(dropdown, options) {
     dropdown.innerHTML = ''; // Clear existing options
+
+    // Create and append the default option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = ''; // Empty value (so it's not selectable)
+    defaultOption.textContent = 'Select the board';
+    defaultOption.disabled = true; // Make it non-selectable
+    defaultOption.selected = true; // Set as default
+    dropdown.appendChild(defaultOption);
+
     options.forEach(option => {
       const opt = document.createElement('option');
       opt.value = option.id; // Adjust based on your API response structure
       opt.textContent = option.name; // Adjust based on your API response structure
       dropdown.appendChild(opt);
     });
+
+    // Remove the default option when the user clicks the dropdown
+    dropdown.addEventListener('focus', function () {
+      if (dropdown.options[0].disabled) {
+        dropdown.remove(0); // Remove first option
+      }
+    }, { once: true }); // Ensures it only runs the first time
+  }
+
+  // Utility function to populate a dropdown
+  function populateListDropdown(dropdown, options) {
+    dropdown.innerHTML = ''; // Clear existing options
+    dropdown.disabled = false;
+
+    options.forEach(option => {
+      const opt = document.createElement('option');
+      opt.value = option.id; // Adjust based on your API response structure
+      opt.textContent = option.name; // Adjust based on your API response structure
+      dropdown.appendChild(opt);
+    });
+
+    saveButton.disabled = false;
   }
 
 
@@ -69,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
         .then(response => response.json())
         .then(data => {
-          populateDropdown(dropdownList, data);
+          populateListDropdown(dropdownList, data);
         })
         .catch(error => console.error('Error fetching second API:', error));
     }
@@ -118,6 +160,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+
+  // Function to handle remove button
+  async function removeCard() {
+    cardID = '67d4901647e1310e45ba71f1';
+   
+
+    // Step 1: First API call to populate dropdown1
+  fetch(`/getMirroredCards?cardID=${cardID}`, {
+    mode: "cors"
+  })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error("Error fetching data:", error));
+
+  }
 
 });
 
