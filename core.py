@@ -85,7 +85,39 @@ def getBoards():
 
     return activeBoards
 
+def getMirroredCards(cardID):
 
+    mirrors = models.Mirror.query.filter_by(original_card_id = cardID).all()
+
+    res = {}
+    for mirror in mirrors:
+        _mirrorID = mirror.mirror_card_id
+        _card = getCard(_mirrorID)
+        _cardName = _card['name']
+        _cardBoard = _card['idBoard']
+        _cardURL = _card['shortUrl']
+        _dic = {}
+        _dic['name'] = _cardName
+        _dic['idBoard'] = _cardBoard
+        _dic['shortURL'] = _cardURL
+        res[_mirrorID] = _dic
+
+    json_data = json.dumps(res, indent=4)
+
+    print(json_data)
+        # _card = getCard(mirror.mirror_card_id)
+        # _cardName = _card['name']
+        # _cardBoard = _card['idBoard']
+        # _cardURL = _card['shortURL']
+        #
+        # res[_cardBoard] = _cardBoard
+        # {'name': _cardName, 'boardID': _card}
+        # print(
+        #     f'This is a mirror with id = {mirror.id}, original card = {mirror.original_card_id} and mirror = {mirror.mirror_card_id}')
+
+
+
+    return json_data
 
 def getFilteredListsOnBoard(boardID, filter="open"):
     headers = {
