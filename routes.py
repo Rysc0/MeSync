@@ -32,6 +32,11 @@ def register_routes(app, db):
         idCardSource = req["originalCardID"]
         return core.createMirrorCard(listID=idList, idCardSource=idCardSource)
 
+    @app.route('/getMirroredCards', methods=['GET'])
+    def getMirroredCards():
+        cardID = request.args.get('cardID')
+        return core.getMirroredCards(cardID)
+
 
     @app.route('/webhook', methods=['POST'])
     def receiveChange():
