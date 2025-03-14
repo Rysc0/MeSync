@@ -108,6 +108,19 @@ def getFilteredListsOnBoard(boardID, filter="open"):
 
 
 def createMirrorCard(listID, idCardSource):
+
+    # check if card exists in the database
+    card = models.Card.query.get(idCardSource)
+
+    if card == None:
+        card = getCard(idCardSource)
+        # TODO: Do I really need to have creator id in the database? I don't get that in the call to /getCard
+        new_card = models.Card(id=idCardSource, name= card['name'], creator_id= card['boris.bastek'])
+        models.db.session.add(new_card)
+        models.db.session.commit()
+
+
+
     headers = {
         "Accept": "application/json"
     }
