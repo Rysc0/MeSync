@@ -115,7 +115,7 @@ def createMirrorCard(listID, idCardSource):
     if card == None:
         card = getCard(idCardSource)
         # TODO: Do I really need to have creator id in the database? I don't get that in the call to /getCard
-        new_card = models.Card(id=idCardSource, name= card['name'], creator_id= card['boris.bastek'])
+        new_card = models.Card(id=idCardSource, name= card['name'], creator_id= 'boris.bastek')
         models.db.session.add(new_card)
         models.db.session.commit()
 
