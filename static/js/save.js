@@ -2,14 +2,6 @@
 const t = window.TrelloPowerUp.iframe();
 console.log("IFRAME")
 
-function adjustBodyHeight() {
-    document.body.style.height = window.innerHeight + "px";
-}
-
-// Run when the page loads and when resized
-window.onload = adjustBodyHeight;
-window.onresize = adjustBodyHeight;
-
 document.addEventListener("DOMContentLoaded", function () {
 
 
@@ -257,6 +249,47 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 t.render(function () {
-  console.log(t.getContext());
-  t.sizeTo(document.body).done();
+
+  getTableData().then((tableData) => {
+    if (!tableData) return;
+
+
+    const tableBody = document.getElementById("entriesTableBody");
+
+    // Clear existing table rows
+    tableBody.innerHTML = "";
+
+    for (const key in tableData) {
+      if (tableData.hasOwnProperty(key)) {
+        const entry = tableData[key];
+
+        // Create a new row
+        const row = document.createElement("tr");
+
+        // Board column (clickable link)
+        const boardCell = document.createElement("td");
+        const boardLink = document.createElement("a");
+        boardLink.href = entry.boardURL;
+        boardLink.textContent = entry.boardName;
+        boardLink.target = "_blank"; // Opens in a new tab
+        boardCell.appendChild(boardLink);
+        row.appendChild(boardCell);
+
+        // List column (clickable link)
+        const listCell = document.createElement("td");
+        const listLink = document.createElement("a");
+        listLink.href = entry.shortURL;
+        listLink.textContent = entry.name;
+        listLink.target = "_blank"; // Opens in a new tab
+        listCell.appendChild(listLink);
+        row.appendChild(listCell);
+
+        // Append row to the table body
+        tableBody.appendChild(row);
+      }
+    }
+  }).then(function(){
+    return t.sizeTo('#context');
+
+  });
 });
