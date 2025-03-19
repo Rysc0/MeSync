@@ -1,6 +1,15 @@
 // Loads up the Trello iframe and applies the styling
 const t = window.TrelloPowerUp.iframe();
 console.log("IFRAME")
+
+function adjustBodyHeight() {
+    document.body.style.height = window.innerHeight + "px";
+}
+
+// Run when the page loads and when resized
+window.onload = adjustBodyHeight;
+window.onresize = adjustBodyHeight;
+
 document.addEventListener("DOMContentLoaded", function () {
 
 
