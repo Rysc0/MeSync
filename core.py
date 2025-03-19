@@ -109,8 +109,12 @@ def getMirroredCards(cardID):
 
     mirrors = models.Mirror.query.filter_by(original_card_id = cardID).all()
 
+    mirrored_by = models.Mirror.query.filter_by(mirror_card_id = cardID).all()
+
+    results = mirrors + mirrored_by
+
     res = {}
-    for mirror in mirrors:
+    for mirror in results:
         _mirrorID = mirror.mirror_card_id
         _card = getCard(_mirrorID)
         _cardName = _card['name']
