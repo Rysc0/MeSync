@@ -35,7 +35,7 @@ def register_routes(app, db):
     @app.route('/getMirroredCards', methods=['GET'])
     def getMirroredCards():
         cardID = request.args.get('cardID')
-        return core.getMirroredCards(cardID)
+        return core.getMirroredCards(cardID, db)
 
 
     @app.route('/webhook', methods=['POST'])
