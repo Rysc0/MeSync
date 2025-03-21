@@ -105,16 +105,51 @@ def getBoard(boardID):
     )
     return response.json()
 
-def getMirroredCards(cardID):
 
-    mirrors = models.Mirror.query.filter_by(original_card_id = cardID).all()
+def getRootCard(cardID):
+    print("prvi id: ", cardID)
+    while True:
+        result = (models.Mirror.query
+                  .with_entities(models.Mirror.original_card_id)
+                  .filter(models.Mirror.mirror_card_id == cardID)
+                  .first())
 
-    mirrored_by = models.Mirror.query.filter_by(mirror_card_id = cardID).all()
+        if not result:
+            print("vracen id: ", cardID)
+            return cardID  # If no parent exists, this is the root
+        cardID = result[0]  # Move up the chain
+        print("trenutni id: ", cardID)
 
-    results = mirrors + mirrored_by
+
+def getDescendantCards(cardID, db):
+    from sqlalchemy import text
+    query = text("""
+            WITH RECURSIVE descendants AS (
+                SELECT mirror_card_id FROM mirror WHERE original_card_id = :cardID
+                UNION ALL
+                SELECT m.mirror_card_id FROM mirror m
+                JOIN descendants d ON m.original_card_id = d.mirror_card_id
+            )
+            SELECT mirror_card_id FROM descendants;
+        """)
+
+    result = db.session.execute(query, {"cardID": cardID}).fetchall()
+
+    # Convert result to a list of card IDs
+    return [row[0] for row in result]
+
+# TODO: Make sure to pass only the database session, not the whole db object
+def getMirroredCards(cardID, db):
+
+    rootCardID = getRootCard(cardID)
+    descendants = getDescendantCards(cardID, db)
+
+    # TODO: This is now uneccesarry because I get descendant card ID's
+    mirrors = models.Mirror.query.filter_by(original_card_id = rootCardID).all()
 
     res = {}
-    for mirror in results:
+    # TODO: Change this build block
+    for mirror in mirrors:
         _mirrorID = mirror.mirror_card_id
         _card = getCard(_mirrorID)
         _cardName = _card['name']
@@ -136,17 +171,6 @@ def getMirroredCards(cardID):
     json_data = json.dumps(res, indent=4)
 
     print(json_data)
-        # _card = getCard(mirror.mirror_card_id)
-        # _cardName = _card['name']
-        # _cardBoard = _card['idBoard']
-        # _cardURL = _card['shortURL']
-        #
-        # res[_cardBoard] = _cardBoard
-        # {'name': _cardName, 'boardID': _card}
-        # print(
-        #     f'This is a mirror with id = {mirror.id}, original card = {mirror.original_card_id} and mirror = {mirror.mirror_card_id}')
-
-
 
     return json_data
 
