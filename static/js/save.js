@@ -195,6 +195,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
+  
+
+});
+
+t.render(function () {
+  console.log(t.getContext());
   getTableData().then((tableData) => {
     if (!tableData) return;
 
@@ -234,10 +240,5 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   })
-
-});
-
-t.render(function () {
-  console.log(t.getContext());
   t.sizeTo(document.body).done();
 });
