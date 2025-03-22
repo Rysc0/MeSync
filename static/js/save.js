@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const listCell = document.createElement("td");
           const listLink = document.createElement("a");
           listLink.href = entry.shortURL;
-          listLink.textContent = entry.name;
+          listLink.textContent = entry.listName;
           listLink.target = "_blank"; // Opens in a new tab
           listCell.appendChild(listLink);
           row.appendChild(listCell);
