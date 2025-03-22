@@ -145,46 +145,49 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   
   
+  t.render(function () {
+    console.log(t.getContext());
+    getTableData().then((tableData) => {
+      if (!tableData) return;
   
-  getTableData().then((tableData) => {
-    if (!tableData) return;
-
-
-    const tableBody = document.getElementById("entriesTableBody");
-
-    // Clear existing table rows
-    tableBody.innerHTML = "";
-
-    for (const key in tableData) {
-      if (tableData.hasOwnProperty(key)) {
-        const entry = tableData[key];
-
-        // Create a new row
-        const row = document.createElement("tr");
-
-        // Board column (clickable link)
-        const boardCell = document.createElement("td");
-        const boardLink = document.createElement("a");
-        boardLink.href = entry.boardURL;
-        boardLink.textContent = entry.boardName;
-        boardLink.target = "_blank"; // Opens in a new tab
-        boardCell.appendChild(boardLink);
-        row.appendChild(boardCell);
-
-        // List column (clickable link)
-        const listCell = document.createElement("td");
-        const listLink = document.createElement("a");
-        listLink.href = entry.shortURL;
-        listLink.textContent = entry.name;
-        listLink.target = "_blank"; // Opens in a new tab
-        listCell.appendChild(listLink);
-        row.appendChild(listCell);
-
-        // Append row to the table body
-        tableBody.appendChild(row);
+  
+      const tableBody = document.getElementById("entriesTableBody");
+  
+      // Clear existing table rows
+      tableBody.innerHTML = "";
+  
+      for (const key in tableData) {
+        if (tableData.hasOwnProperty(key)) {
+          const entry = tableData[key];
+  
+          // Create a new row
+          const row = document.createElement("tr");
+  
+          // Board column (clickable link)
+          const boardCell = document.createElement("td");
+          const boardLink = document.createElement("a");
+          boardLink.href = entry.boardURL;
+          boardLink.textContent = entry.boardName;
+          boardLink.target = "_blank"; // Opens in a new tab
+          boardCell.appendChild(boardLink);
+          row.appendChild(boardCell);
+  
+          // List column (clickable link)
+          const listCell = document.createElement("td");
+          const listLink = document.createElement("a");
+          listLink.href = entry.shortURL;
+          listLink.textContent = entry.name;
+          listLink.target = "_blank"; // Opens in a new tab
+          listCell.appendChild(listLink);
+          row.appendChild(listCell);
+  
+          // Append row to the table body
+          tableBody.appendChild(row);
+        }
       }
-    }
-  })
+    })
+    t.sizeTo(document.body).done();
+  });
 
 
   const dropdown = document.getElementById('boardDropdown');
