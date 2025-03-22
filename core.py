@@ -166,8 +166,8 @@ def getMirroredCards(cardID, db):
     descendants = getDescendantCards(rootCardID, db)
 
     if cardID != rootCardID:
-        descendants.remove(cardID)
         descendants.append(rootCardID)
+        descendants.remove(cardID)
 
 
 
