@@ -165,7 +165,9 @@ def getMirroredCards(cardID, db):
     # just list of card ID's
     descendants = getDescendantCards(cardID, db)
 
-    mirrors = [getCard(i) for i in descendants]
+    mirrors = []
+    for c in descendants:
+        mirrors.append(getCard(c))
 
 
     # TODO: This is now uneccesarry because I get descendant card ID's
