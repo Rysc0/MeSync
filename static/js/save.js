@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     })
-    t.sizeTo(document.body).done();
+    t.sizeTo('#content');
   });
 
 
