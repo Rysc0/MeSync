@@ -186,7 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       }
     }).then(function(){
-      return t.sizeTo('#content');
+      return t.sizeTo(document.body);
     });
   });
 
@@ -238,8 +238,3 @@ document.addEventListener("DOMContentLoaded", function () {
   removeButton.addEventListener('click', removeCard);
 
 });
-
-// t.render(function () {
-//   console.log(t.getContext());
-//   t.sizeTo(document.body).done();
-// });
