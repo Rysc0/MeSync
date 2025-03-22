@@ -161,33 +161,31 @@ def getDescendantCards(cardID, db):
 def getMirroredCards(cardID, db):
 
     rootCardID = getRootCard(cardID)
+
+    # just list of card ID's
     descendants = getDescendantCards(cardID, db)
+
+    mirrors = [getCard(i) for i in descendants]
+
 
     # TODO: This is now uneccesarry because I get descendant card ID's
     # mirrors = models.Mirror.query.filter_by(original_card_id = rootCardID).all()
 
     res = {}
     # TODO: Change this build block
-    for mirror in descendants:
-        _mirrorID = mirror.mirror_card_id
-        _card = getCard(_mirrorID)
-        _cardName = _card['name']
-        _boardID = _card['idBoard']
-        _board = getBoard(_boardID)
-        _boardURL = _board['shortUrl']
-        _cardBoard = _board['name']
-        _cardURL = _card['shortUrl']
-        _listName = getListName(_card['idList'])
+    for mirror in mirrors:
+        _board = getBoard(mirror['idBoard'])
+        _listName = getListName(mirror['idList'])
 
         _dic = {}
-        _dic['name'] = _cardName
-        _dic['shortURL'] = _cardURL
-        _dic['idBoard'] = _boardID
-        _dic['boardName'] = _cardBoard
-        _dic['boardURL'] = _boardURL
+        _dic['name'] = mirror['name']
+        _dic['shortURL'] = mirror['shortUrl']
+        _dic['idBoard'] = mirror['idBoard']
+        _dic['boardName'] = _board['name']
+        _dic['boardURL'] = _board['shortUrl']
         _dic['listName'] = _listName
 
-        res[_mirrorID] = _dic
+        res[mirror['id']] = _dic
 
     json_data = json.dumps(res, indent=4)
 
