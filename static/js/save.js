@@ -160,47 +160,6 @@ dropdown.addEventListener('change', () => {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-
-  const dropdown = document.getElementById('boardDropdown');
-  // Preselected default text
-  const defaultBoard = document.createElement('option');
-  defaultBoard.value = "Select";
-  defaultBoard.text = "Select the board";
-  dropdown.appendChild(defaultBoard);
-
-
-  const dropdownList = document.getElementById('listDropdown');
-  // Preselected default text
-  const defaultList = document.createElement('option');
-  defaultList.value = '';
-  defaultList.text = 'Select the list';
-  dropdownList.appendChild(defaultList);
-  dropdownList.disabled = true;
-
-
-  const saveButton = document.getElementById('saveButton');
-  saveButton.disabled = true;
-
-  const removeButton = document.getElementById('removeButton');
-
-
-  // Add event listener to the save button
-  saveButton.addEventListener('click', saveData);
-
-  // Add event listener to the remove button
-  removeButton.addEventListener('click', removeCard);
-
-
-
-
-
-
-  
-
-});
-
-t.render(function () {
-  console.log(t.getContext());
   getTableData().then((tableData) => {
     if (!tableData) return;
 
@@ -240,5 +199,40 @@ t.render(function () {
       }
     }
   })
+
+
+  const dropdown = document.getElementById('boardDropdown');
+  // Preselected default text
+  const defaultBoard = document.createElement('option');
+  defaultBoard.value = "Select";
+  defaultBoard.text = "Select the board";
+  dropdown.appendChild(defaultBoard);
+
+
+  const dropdownList = document.getElementById('listDropdown');
+  // Preselected default text
+  const defaultList = document.createElement('option');
+  defaultList.value = '';
+  defaultList.text = 'Select the list';
+  dropdownList.appendChild(defaultList);
+  dropdownList.disabled = true;
+
+
+  const saveButton = document.getElementById('saveButton');
+  saveButton.disabled = true;
+
+  const removeButton = document.getElementById('removeButton');
+
+
+  // Add event listener to the save button
+  saveButton.addEventListener('click', saveData);
+
+  // Add event listener to the remove button
+  removeButton.addEventListener('click', removeCard);
+
+});
+
+t.render(function () {
+  console.log(t.getContext());
   t.sizeTo(document.body).done();
 });
