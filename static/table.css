@@ -1,0 +1,10 @@
+.table-container {
+    max-height: 200px; /* Adjust as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ddd; /* Optional: adds a border for visibility */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
