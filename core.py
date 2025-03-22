@@ -106,6 +106,25 @@ def getBoard(boardID):
     return response.json()
 
 
+def getListName(listID):
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "GET",
+        BASEURL + "lists/{}".format(listID),
+        headers=headers,
+        params=query
+    )
+    return response.json()['name']
+
+
 def getRootCard(cardID):
     print("prvi id: ", cardID)
     while True:
@@ -158,6 +177,7 @@ def getMirroredCards(cardID, db):
         _boardURL = _board['shortUrl']
         _cardBoard = _board['name']
         _cardURL = _card['shortUrl']
+        _listName = getListName(_card['idList'])
 
         _dic = {}
         _dic['name'] = _cardName
@@ -165,6 +185,7 @@ def getMirroredCards(cardID, db):
         _dic['idBoard'] = _boardID
         _dic['boardName'] = _cardBoard
         _dic['boardURL'] = _boardURL
+        _dic['listName'] = _listName
 
         res[_mirrorID] = _dic
 
