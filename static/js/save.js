@@ -185,8 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
           tableBody.appendChild(row);
         }
       }
-    })
-    t.sizeTo('#content');
+    }).then(function(){
+      return t.sizeTo('#content');
+    });
   });
 
 
