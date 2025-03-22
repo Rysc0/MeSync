@@ -164,11 +164,11 @@ def getMirroredCards(cardID, db):
     descendants = getDescendantCards(cardID, db)
 
     # TODO: This is now uneccesarry because I get descendant card ID's
-    mirrors = models.Mirror.query.filter_by(original_card_id = rootCardID).all()
+    # mirrors = models.Mirror.query.filter_by(original_card_id = rootCardID).all()
 
     res = {}
     # TODO: Change this build block
-    for mirror in mirrors:
+    for mirror in descendants:
         _mirrorID = mirror.mirror_card_id
         _card = getCard(_mirrorID)
         _cardName = _card['name']
