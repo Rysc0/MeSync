@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-t.render(function () {
-  console.log(t.getContext());
-  t.sizeTo(document.body).done();
-});
+// t.render(function () {
+//   console.log(t.getContext());
+//   t.sizeTo(document.body).done();
+// });
