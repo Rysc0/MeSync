@@ -163,7 +163,12 @@ def getMirroredCards(cardID, db):
     rootCardID = getRootCard(cardID)
 
     # just list of card ID's
-    descendants = getDescendantCards(cardID, db)
+    descendants = getDescendantCards(rootCardID, db)
+
+    if cardID != rootCardID:
+        descendants.remove(cardID)
+
+
 
     mirrors = []
     for c in descendants:
