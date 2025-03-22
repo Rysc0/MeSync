@@ -60,24 +60,7 @@ function populateListDropdown(dropdown, options) {
   saveButton.disabled = false;
 }
 
-async function getLists() {
-  const selectedValue = dropdown.value;
 
-  // Clear dropdown2 while loading new options
-  //clearDropdown(dropdownList);
-
-  // Step 3: Second API call to populate dropdown2 based on dropdown1 value
-  if (selectedValue) {
-    await fetch(`/getFilteredListsOnBoard?boardID=${selectedValue}`, {
-      mode: "cors"
-    })
-      .then(response => response.json())
-      .then(data => {
-        populateListDropdown(dropdownList, data);
-      })
-      .catch(error => console.error('Error fetching second API:', error));
-  }
-}
 
 
 // Function to handle the save button click
@@ -139,27 +122,30 @@ async function removeCard() {
 }
 
 
-// Step 1: First API call to populate dropdown1
-fetch('/getBoards', {
-  mode: "cors"
-})
-  .then(response => response.json())
-  .then(data => {
-    populateBoardDropdown(dropdown, data);
-    getLists()
-  })
-  .catch(error => console.error('Error fetching first API:', error));
-
-
-// Step 2: Event listener for dropdown1 changes
-dropdown.addEventListener('change', () => {
-  getLists()
-});
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
 
+  async function getLists() {
+    const selectedValue = dropdown.value;
+  
+    // Clear dropdown2 while loading new options
+    //clearDropdown(dropdownList);
+  
+    // Step 3: Second API call to populate dropdown2 based on dropdown1 value
+    if (selectedValue) {
+      await fetch(`/getFilteredListsOnBoard?boardID=${selectedValue}`, {
+        mode: "cors"
+      })
+        .then(response => response.json())
+        .then(data => {
+          populateListDropdown(dropdownList, data);
+        })
+        .catch(error => console.error('Error fetching second API:', error));
+    }
+  }
+  
+  
+  
   getTableData().then((tableData) => {
     if (!tableData) return;
 
@@ -217,6 +203,23 @@ document.addEventListener("DOMContentLoaded", function () {
   dropdownList.appendChild(defaultList);
   dropdownList.disabled = true;
 
+
+  // Step 1: First API call to populate dropdown1
+  fetch('/getBoards', {
+    mode: "cors"
+  })
+    .then(response => response.json())
+    .then(data => {
+      populateBoardDropdown(dropdown, data);
+      getLists()
+    })
+    .catch(error => console.error('Error fetching first API:', error));
+
+
+  // Step 2: Event listener for dropdown1 changes
+  dropdown.addEventListener('change', () => {
+    getLists()
+  });
 
   const saveButton = document.getElementById('saveButton');
   saveButton.disabled = true;
