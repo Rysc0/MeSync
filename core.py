@@ -451,15 +451,17 @@ def syncronizeCards(req):
 
         if action['display']['translationKey'] == 'action_add_checklist_to_card':
 
+            # take the checklist source ID from the webhook
+            idChecklistSource = action['data']['checklist']['id']
 
             # first check the child card
             for _card in copied:
-                response = createChecklist(cardID= _card.mirror_card_id, idChecklistSource= changedCardId)
+                response = createChecklist(cardID= _card.mirror_card_id, idChecklistSource= idChecklistSource)
                 responses.append(response)
 
             # check the parent card
             for _card in isCopyOf:
-                response = createChecklist(cardID= _card.original_card_id, idChecklistSource= changedCardId)
+                response = createChecklist(cardID= _card.original_card_id, idChecklistSource= idChecklistSource)
                 responses.append(response)
 
             return responses
