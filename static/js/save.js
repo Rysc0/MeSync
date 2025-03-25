@@ -61,51 +61,6 @@ function populateListDropdown(dropdown, options) {
 }
 
 
-
-
-// Function to handle the save button click
-async function saveData() {
-  const selectedBoard = dropdown.value;
-  const selectedList = dropdownList.value;
-
-  if (!selectedBoard || !selectedList) {
-    alert('Please select both a board and a list before saving.');
-    return;
-  }
-
-  // console.log(t.card())
-  const tempid = t.getContext().card
-  console.log(`This is current card id: ${tempid}`)
-
-  const payload = {
-    listID: selectedList,
-    originalCardID: tempid
-  };
-
-
-  try {
-    const response = await fetch('/createMirrorCard', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload),
-      mode: "cors"
-    });
-
-    if (response.ok) {
-      alert('Selection saved successfully!');
-    } else {
-      console.error('Error saving data:', response.statusText);
-      alert('Failed to save selection. Please try again.');
-    }
-  } catch (error) {
-    console.error('Error during save request:', error);
-    alert('An error occurred while saving. Please try again.');
-  }
-}
-
-
 // Function to handle remove button
 async function removeCard() {
   cardID = '67d4901647e1310e45ba71f1';
@@ -127,10 +82,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function getLists() {
     const selectedValue = dropdown.value;
-  
+
     // Clear dropdown2 while loading new options
     //clearDropdown(dropdownList);
-  
+
     // Step 3: Second API call to populate dropdown2 based on dropdown1 value
     if (selectedValue) {
       await fetch(`/getFilteredListsOnBoard?boardID=${selectedValue}`, {
@@ -143,26 +98,68 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error('Error fetching second API:', error));
     }
   }
-  
-  
+
+  // Function to handle the save button click
+  async function saveData() {
+    const selectedBoard = dropdown.value;
+    const selectedList = dropdownList.value;
+
+    if (!selectedBoard || !selectedList) {
+      alert('Please select both a board and a list before saving.');
+      return;
+    }
+
+    // console.log(t.card())
+    const tempid = t.getContext().card
+    console.log(`This is current card id: ${tempid}`)
+
+    const payload = {
+      listID: selectedList,
+      originalCardID: tempid
+    };
+
+
+    try {
+      const response = await fetch('/createMirrorCard', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload),
+        mode: "cors"
+      });
+
+      if (response.ok) {
+        alert('Selection saved successfully!');
+      } else {
+        console.error('Error saving data:', response.statusText);
+        alert('Failed to save selection. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error during save request:', error);
+      alert('An error occurred while saving. Please try again.');
+    }
+  }
+
+
   t.render(function () {
     console.log(t.getContext());
     getTableData().then((tableData) => {
       if (!tableData) return;
-  
-  
+
+
       const tableBody = document.getElementById("entriesTableBody");
-  
+
       // Clear existing table rows
       tableBody.innerHTML = "";
-  
+
       for (const key in tableData) {
         if (tableData.hasOwnProperty(key)) {
           const entry = tableData[key];
-  
+
           // Create a new row
           const row = document.createElement("tr");
-  
+
           // Board column (clickable link)
           const boardCell = document.createElement("td");
           const boardLink = document.createElement("a");
@@ -171,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
           boardLink.target = "_blank"; // Opens in a new tab
           boardCell.appendChild(boardLink);
           row.appendChild(boardCell);
-  
+
           // List column (clickable link)
           const listCell = document.createElement("td");
           const listLink = document.createElement("a");
@@ -180,12 +177,12 @@ document.addEventListener("DOMContentLoaded", function () {
           listLink.target = "_blank"; // Opens in a new tab
           listCell.appendChild(listLink);
           row.appendChild(listCell);
-  
+
           // Append row to the table body
           tableBody.appendChild(row);
         }
       }
-    }).then(function(){
+    }).then(function () {
       return t.sizeTo(document.body);
     });
   });
