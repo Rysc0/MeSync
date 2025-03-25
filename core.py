@@ -287,9 +287,12 @@ def createMirrorCard(listID, idCardSource):
     return response.json()
 
 def syncronizeCards(req):
-    action = req["action"]
-    model = req["model"]
-    webhook = req["webhook"]
+    try:
+        action = req["action"]
+        model = req["model"]
+        webhook = req["webhook"]
+    except:
+        return {'error': 'cant parse this'}
 
     # check the changes / caching / ignoring duplicate updates
     lastActivityTimestamp = datetime.strptime(model['dateLastActivity'], "%Y-%m-%dT%H:%M:%S.%fZ")
