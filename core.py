@@ -447,6 +447,24 @@ def syncronizeCards(req):
             return responses
 
 
+    if action['type'] == 'addChecklistToCard':
+
+        if action['display']['translationKey'] == 'action_add_checklist_to_card':
+
+
+            # first check the child card
+            for _card in copied:
+                response = createChecklist(cardID= _card.mirror_card_id, idChecklistSource= changedCardId)
+                responses.append(response)
+
+            # check the parent card
+            for _card in isCopyOf:
+                response = createChecklist(cardID= _card.original_card_id, idChecklistSource= changedCardId)
+                responses.append(response)
+
+            return responses
+
+
     # TODO: Comments will be updated later
     if action['type'] == 'commentCard':
         if action['display']['translationKey'] == 'action_comment_on_card':
@@ -559,3 +577,26 @@ def createWebhook(cardID):
     )
     print('Webhook created with id = ', response.json()['id'])
     return response.json()
+
+
+def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
+
+    params = locals()
+
+    query = {
+        'idCard': cardID,
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    # works for now, it just takes all parameters and adds them to the query
+    query.update(params)
+
+    response = requests.request(
+        "POST",
+        BASEURL + "checklists",
+        params=query
+    )
+
+    print(response.json)
+    return response.json
