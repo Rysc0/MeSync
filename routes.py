@@ -42,7 +42,7 @@ def register_routes(app, db):
     def receiveChange():
         try:
             req = request.get_json()
+            return core.syncronizeCards(req)
         except:
             print("problem is here")
             return {"ERROR, not serializable!"}
-        return core.syncronizeCards(req)
