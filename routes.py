@@ -40,6 +40,7 @@ def register_routes(app, db):
 
     @app.route('/webhook', methods=['POST'])
     def receiveChange():
+        # TODO: Check if the req is serializable
         try:
             req = request.get_json()
             return core.syncronizeCards(req)
