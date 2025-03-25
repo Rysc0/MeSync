@@ -1,5 +1,6 @@
 import requests
 import json
+from datetime import datetime
 
 # database imports
 import models
@@ -291,6 +292,9 @@ def syncronizeCards(req):
     webhook = req["webhook"]
 
     # check the changes / caching / ignoring duplicate updates
+    lastActivityTimestamp = datetime.strptime(model['dateLastActivity'], "%Y-%m-%dT%H:%M:%S.%fZ")
+    if (datetime.now() - lastActivityTimestamp).total_seconds() < 2:
+        return {"Error": "This is a duplicate request, aborting"}
 
     responses = []
 
