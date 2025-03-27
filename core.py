@@ -591,6 +591,7 @@ def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
     params = locals()
 
     headers = {
+        "Accept": "application/json",
         "X-Trello-Client-Identifier": "ma-app"
     }
 
