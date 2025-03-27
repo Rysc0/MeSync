@@ -287,17 +287,14 @@ def createMirrorCard(listID, idCardSource):
     return response.json()
 
 def syncronizeCards(req):
-    try:
-        action = req["action"]
-        model = req["model"]
-        webhook = req["webhook"]
-    except:
-        return {'error': 'cant parse this'}
+
+    action = req["action"]
+    model = req["model"]
+    webhook = req["webhook"]
+
 
     # check the changes / caching / ignoring duplicate updates
-    lastActivityTimestamp = datetime.strptime(model['dateLastActivity'], "%Y-%m-%dT%H:%M:%S.%fZ")
-    if (datetime.now() - lastActivityTimestamp).total_seconds() < 2:
-        return {"Error": "This is a duplicate request, aborting"}
+
 
     responses = []
 
@@ -519,7 +516,8 @@ def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachme
     """
     params = locals()
     headers = {
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-Trello-Client-Identifier": "ma-app"
     }
 
     query = {

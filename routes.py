@@ -41,9 +41,10 @@ def register_routes(app, db):
     @app.route('/webhook', methods=['POST'])
     def receiveChange():
         # TODO: Check if the req is serializable
-        try:
-            req = request.get_json()
-            return core.syncronizeCards(req)
-        except:
-            print("problem is here")
-            return {"ERROR, not serializable!"}
+        req = request.get_json()
+        client_identifier = request.headers.get("X-Trello-Client-Identifier")
+
+        if client_identifier == "ma-app":
+            return "Ignored to prevent loop", 200
+
+        return core.syncronizeCards(req)
