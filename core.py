@@ -590,7 +590,7 @@ def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
 
     params = locals()
 
-    header = {
+    headers = {
         "X-Trello-Client-Identifier": "ma-app"
     }
 
@@ -606,6 +606,7 @@ def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
     response = requests.request(
         "POST",
         BASEURL + "checklists",
+        headers=headers,
         params=query
     )
 
