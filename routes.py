@@ -45,6 +45,7 @@ def register_routes(app, db):
         client_identifier = request.headers.get("X-Trello-Client-Identifier")
 
         if client_identifier == "ma-app":
+            print("Ignored to prevent loop")
             return "Ignored to prevent loop", 200
 
         return core.syncronizeCards(req)
