@@ -590,6 +590,10 @@ def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
 
     params = locals()
 
+    header = {
+        "X-Trello-Client-Identifier": "ma-app"
+    }
+
     query = {
         'idCard': cardID,
         'key': API_KEY,
