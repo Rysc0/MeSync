@@ -1,3 +1,5 @@
+from asyncio import timeout
+
 from flask import request, render_template
 import core
 from flask_caching import Cache
@@ -49,11 +51,12 @@ def register_routes(app, db, cache):
             print("Ignored to prevent loop")
             return "Ignored to prevent loop", 200
 
-        if cache.get(req["action"]["id"]):
+        if cache.get(client_identifier):
             print("Action already in cache, ignoring the webhook")
             return "Action already in cache, ignoring the webhook", 200
 
         else:
-            cache.set(req["action"]["id"], True, timeout=300)
+            # cache.set(req["action"]["id"], True, timeout=300)
+            cache.set(client_identifier, True, timeout=300)
 
         return core.syncronizeCards(req)
