@@ -453,6 +453,8 @@ def syncronizeCards(req):
 
     if action['type'] == 'addChecklistToCard':
 
+        # TODO: Check if the card already has the same checklist and abort change
+
         if action['display']['translationKey'] == 'action_add_checklist_to_card':
 
             # take the checklist source ID from the webhook

@@ -3,6 +3,7 @@ from os import getenv
 
 import flask
 from flask import Flask, request, render_template
+from flask_caching import Cache
 #import core
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -20,12 +21,12 @@ def create_app():
     app.config["API_KEY"] = getenv('API_KEY')
     app.config["TOKEN"] = getenv('TOKEN')
     app.config["CALLBACKURL"] = getenv('CALLBACKURL')
-
+    cache = Cache(app)
     db.init_app(app)
 
     # imports
     from routes import register_routes
-    register_routes(app, db)
+    register_routes(app, db, cache)
 
     migrate = Migrate(app, db)
 

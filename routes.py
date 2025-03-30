@@ -1,9 +1,10 @@
 from flask import request, render_template
 import core
+from flask_caching import Cache
 
 
 
-def register_routes(app, db):
+def register_routes(app, db, cache):
 
     @app.route('/', methods=['GET', 'POST'])  # Accepts only POST requests
     def example():
@@ -47,5 +48,12 @@ def register_routes(app, db):
         if client_identifier == "ma-app":
             print("Ignored to prevent loop")
             return "Ignored to prevent loop", 200
+
+        if cache.get(req["action"]["id"]):
+            print("Action already in cache, ignoring the webhook")
+            return "Action already in cache, ignoring the webhook", 200
+
+        else:
+            cache.set(req["action"]["id"])
 
         return core.syncronizeCards(req)
