@@ -21,6 +21,8 @@ def create_app():
     app.config["API_KEY"] = getenv('API_KEY')
     app.config["TOKEN"] = getenv('TOKEN')
     app.config["CALLBACKURL"] = getenv('CALLBACKURL')
+    app.config["CACHE_TYPE"] = "SimpleCache"
+    app.config["CACHE_DEFAULT_TIMEOUT"] = 300
     cache = Cache(app)
     db.init_app(app)
 
