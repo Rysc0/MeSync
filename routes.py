@@ -54,6 +54,6 @@ def register_routes(app, db, cache):
             return "Action already in cache, ignoring the webhook", 200
 
         else:
-            cache.set(req["action"]["id"])
+            cache.set(req["action"]["id"], True, timeout=300)
 
         return core.syncronizeCards(req)
