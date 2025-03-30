@@ -1,7 +1,9 @@
+import hashlib
+
 import requests
 import json
 from datetime import datetime
-import uuid
+import time
 
 # database imports
 import models
@@ -592,10 +594,10 @@ def createWebhook(cardID):
 def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
 
     params = locals()
-
+    unique_id = hashlib.sha256(f"{cardID}-{time.time()}".encode()).hexdigest()
     headers = {
         "Accept": "application/json",
-        "X-Trello-Client-Identifier": str(uuid.uuid4())
+        "X-Trello-Client-Identifier": unique_id[:16]
     }
 
     query = {
