@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import datetime
+import uuid
 
 # database imports
 import models
@@ -519,7 +520,7 @@ def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachme
     params = locals()
     headers = {
         "Accept": "application/json",
-        "X-Trello-Client-Identifier": "ma-app"
+        "X-Trello-Client-Identifier": str(uuid.uuid4())
     }
 
     query = {
