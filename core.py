@@ -595,7 +595,7 @@ def createWebhook(cardID):
 def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
 
     params = locals()
-    unique_id = hashlib.sha256(f"{cardID}-{time.time()}".encode()).hexdigest()
+    unique_id = hashlib.sha256(f"{cardID}".encode()).hexdigest()
     headers = {
         "Accept": "application/json",
         "X-Trello-Client-Identifier": unique_id[:16]
