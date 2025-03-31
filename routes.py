@@ -44,7 +44,11 @@ def register_routes(app, db, cache):
     @app.route('/webhook', methods=['POST'])
     def receiveChange():
         # TODO: Check if the req is serializable
-        req = request.get_json()
+        try:
+            req = request.get_json()
+        except Exception as error:
+            return f"Could not read the response: {error}", 400
+
         client_identifier = request.headers.get("X-Trello-Client-Identifier")
 
         # if client_identifier == "ma-app":
