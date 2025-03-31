@@ -55,4 +55,8 @@ def register_routes(app, db, cache):
             print("Action already in cache, ignoring the webhook")
             return f"Action already in cache {client_identifier}, ignoring the webhook", 200
 
+        if cache.get(req['action']['id']):
+            print("Action already procesed, ignoring the webhook")
+            return f"Action already already procesed {client_identifier}, ignoring the webhook", 200
+
         return core.syncronizeCards(req, cache)
