@@ -328,9 +328,11 @@ def syncronizeCards(req):
 
         if action['display']['translationKey'] == 'action_renamed_card':
 
+            identifier = action['id']
+
             # check the parent card
             for _cardID in affectedCards:
-                response = updateCard(_cardID, name=model['name'])
+                response = updateCard(_cardID, name=model['name'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -520,15 +522,17 @@ def syncronizeCards(req):
 
 def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachmentCover=None, idList=None, idLabels=None,
                idBoard=None, pos=None, due=None, start=None, dueComplete=None, subscribed=None, address=None,
-               locationName=None, coordinates=None, cover=None):
+               locationName=None, coordinates=None, cover=None, identifier=None):
     """
     Updates the card with the given ID.
     """
     params = locals()
     headers = {
-        "Accept": "application/json",
-        "X-Trello-Client-Identifier": str(uuid.uuid4())
+        "Accept": "application/json"
     }
+
+    if identifier:
+        headers['X-Trello-Client-Identifier'] = identifier
 
     query = {
         'key': API_KEY,
