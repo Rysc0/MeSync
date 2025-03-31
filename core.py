@@ -295,7 +295,7 @@ def createMirrorCard(listID, idCardSource):
 
     return response.json()
 
-def syncronizeCards(req):
+def syncronizeCards(req, cache):
 
     action = req["action"]
     model = req["model"]
@@ -329,6 +329,7 @@ def syncronizeCards(req):
         if action['display']['translationKey'] == 'action_renamed_card':
 
             identifier = action['id']
+            cache.set(identifier, True, 180)
 
             # check the parent card
             for _cardID in affectedCards:

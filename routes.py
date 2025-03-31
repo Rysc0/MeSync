@@ -47,16 +47,12 @@ def register_routes(app, db, cache):
         req = request.get_json()
         client_identifier = request.headers.get("X-Trello-Client-Identifier")
 
-        if client_identifier == "ma-app":
-            print("Ignored to prevent loop")
-            return "Ignored to prevent loop", 200
+        # if client_identifier == "ma-app":
+        #     print("Ignored to prevent loop")
+        #     return "Ignored to prevent loop", 200
 
         if cache.get(client_identifier):
             print("Action already in cache, ignoring the webhook")
-            return "Action already in cache, ignoring the webhook", 200
+            return f"Action already in cache {client_identifier}, ignoring the webhook", 200
 
-        else:
-            # cache.set(req["action"]["id"], True, timeout=300)
-            cache.set(client_identifier, True, timeout=300)
-
-        return core.syncronizeCards(req)
+        return core.syncronizeCards(req, cache)
