@@ -329,7 +329,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, desc=model['desc'], identifier= identifier)
+                response = updateCard(_card, desc=model['desc'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -341,7 +341,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, due=model['due'], identifier= identifier)
+                response = updateCard(_card, due=model['due'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -353,7 +353,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, due='null', identifier= identifier)
+                response = updateCard(_card, due='null', identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -365,7 +365,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, due=model['due'], identifier= identifier)
+                response = updateCard(_card, due=model['due'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -377,7 +377,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, start=model['start'], identifier= identifier)
+                response = updateCard(_card, start=model['start'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -389,7 +389,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, start='null', identifier= identifier)
+                response = updateCard(_card, start='null', identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -401,7 +401,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, start=model['start'], identifier= identifier)
+                response = updateCard(_card, start=model['start'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -413,7 +413,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower(), identifier= identifier)
+                response = updateCard(_card, dueComplete=str(model['dueComplete']).lower(), identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -425,7 +425,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 180)
 
             for _card in affectedCards:
-                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower(), identifier= identifier)
+                response = updateCard(_card, dueComplete=str(model['dueComplete']).lower(), identifier= identifier)
                 responses.append(response)
 
             return responses
