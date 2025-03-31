@@ -323,6 +323,7 @@ def syncronizeCards(req, cache):
 
             return responses
 
+
         if action['display']['translationKey'] == 'action_changed_description_of_card':
 
             identifier = action['id']
@@ -446,6 +447,7 @@ def syncronizeCards(req, cache):
                 responses.append(response)
 
             return responses
+
 
     if action['type'] == 'removeChecklistFromCard':
 

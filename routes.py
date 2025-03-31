@@ -43,17 +43,13 @@ def register_routes(app, db, cache):
 
     @app.route('/webhook', methods=['POST'])
     def receiveChange():
-        # TODO: Check if the req is serializable
+
         try:
             req = request.get_json()
         except Exception as error:
             return f"Could not read the response: {error}", 400
 
         client_identifier = request.headers.get("X-Trello-Client-Identifier")
-
-        # if client_identifier == "ma-app":
-        #     print("Ignored to prevent loop")
-        #     return "Ignored to prevent loop", 200
 
         if cache.get(client_identifier):
             print("Action already in cache, ignoring the webhook")
@@ -64,5 +60,4 @@ def register_routes(app, db, cache):
             return f"Action already already procesed {client_identifier}, ignoring the webhook", 200
 
         result = core.syncronizeCards(req, cache)
-        print("OVO JE TIP: ", type(result))
         return jsonify(result)
