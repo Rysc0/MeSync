@@ -302,27 +302,12 @@ def syncronizeCards(req, cache):
     webhook = req["webhook"]
 
 
-    # check the changes / caching / ignoring duplicate updates
-
-
     responses = []
 
     changedCardId = model['id']
 
     affectedCards = getMirroredCards(changedCardId, models.db, onlyIDs=True)
-    print("this is only ids: ", affectedCards)
 
-    # get mirrored cards for the changed card
-    copied = models.Mirror.query.filter_by(original_card_id=changedCardId).all()
-    # gets the ID of the "child" card of the current card
-    # models.Mirror.query.filter_by(original_card_id=changedCardId).all()[0].mirror_card_id
-
-
-    isCopyOf = models.Mirror.query.filter_by(mirror_card_id=changedCardId).all()
-    # gets the ID of "parent" card of the changed card
-    # models.Mirror.query.filter_by(mirror_card_id=changedCardId).all()[0].original_card_id
-
-    # mirroredCardsList = database['cards'][changedCardId]['mirroredCards']
 
     if action["type"] == 'updateCard':
 
@@ -339,26 +324,24 @@ def syncronizeCards(req, cache):
             return responses
 
         if action['display']['translationKey'] == 'action_changed_description_of_card':
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, desc=model['desc'])
-                responses.append(response)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, desc=model['desc'])
+            identifier = action['id']
+            cache.set(identifier, True, 180)
+
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, desc=model['desc'], identifier= identifier)
                 responses.append(response)
 
             return responses
 
+
         if action['display']['translationKey'] == 'action_added_a_due_date':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, due=model['due'])
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, due=model['due'])
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, due=model['due'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -366,13 +349,11 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_removed_a_due_date':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, due='null')
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, due='null')
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, due='null', identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -380,13 +361,11 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_changed_a_due_date':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, due=model['due'])
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, due=model['due'])
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, due=model['due'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -394,13 +373,11 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_added_a_start_date':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, start=model['start'])
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, start=model['start'])
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, start=model['start'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -408,13 +385,11 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_removed_a_start_date':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, start='null')
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, start='null')
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, start='null', identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -422,13 +397,11 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_changed_a_start_date':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, start=model['start'])
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, start=model['start'])
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, start=model['start'], identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -436,13 +409,11 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_marked_the_due_date_complete':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, dueComplete=str(model['dueComplete']).lower())
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower())
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower(), identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -450,21 +421,17 @@ def syncronizeCards(req, cache):
 
         if action['display']['translationKey'] == 'action_marked_the_due_date_incomplete':
 
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, dueComplete=str(model['dueComplete']).lower())
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-                # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower())
+            for _card in affectedCards:
+                response = updateCard(_card.original_card_id, dueComplete=str(model['dueComplete']).lower(), identifier= identifier)
                 responses.append(response)
 
             return responses
 
 
     if action['type'] == 'addChecklistToCard':
-
-        # TODO: Check if the card already has the same checklist and abort change
 
         if action['display']['translationKey'] == 'action_add_checklist_to_card':
 
@@ -474,13 +441,27 @@ def syncronizeCards(req, cache):
             identifier = action['id']
             cache.set(identifier, True, 180)
 
-
-            # first check the child card
             for _card in affectedCards:
                 response = createChecklist(cardID= _card, idChecklistSource= idChecklistSource, identifier= identifier)
                 responses.append(response)
 
             return responses
+
+    if action['type'] == 'removeChecklistFromCard':
+
+        if action['display']['translationKey'] == 'action_remove_checklist_from_card':
+
+
+            identifier = action['id']
+            cache.set(identifier, True, 180)
+
+            # TODO: Get the correct checklist to delete
+
+            return
+
+
+
+
 
 
     # TODO: Comments will be updated later
@@ -620,6 +601,28 @@ def createChecklist(cardID, name=None, pos=None, idChecklistSource=None, identif
     response = requests.request(
         "POST",
         BASEURL + "checklists",
+        headers=headers,
+        params=query
+    )
+
+    print(response.json())
+    return response.json()
+
+
+def deleteChecklist(checklistID):
+
+    headers = {
+        "Accept": "application/json",
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "DELETE",
+        BASEURL + "checklists/{}".format(checklistID),
         headers=headers,
         params=query
     )
