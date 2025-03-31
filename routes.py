@@ -64,4 +64,5 @@ def register_routes(app, db, cache):
             return f"Action already already procesed {client_identifier}, ignoring the webhook", 200
 
         result = core.syncronizeCards(req, cache)
+        print("OVO JE TIP: ", type(result))
         return result
