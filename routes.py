@@ -59,4 +59,8 @@ def register_routes(app, db, cache):
             print("Action already procesed, ignoring the webhook")
             return f"Action already already procesed {client_identifier}, ignoring the webhook", 200
 
-        return core.syncronizeCards(req, cache)
+        try:
+            return core.syncronizeCards(req, cache)
+        except Exception as e:
+            return f"Encountered an error: {e}", 400
+        # return core.syncronizeCards(req, cache)
