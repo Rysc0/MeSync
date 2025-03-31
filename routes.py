@@ -1,6 +1,6 @@
 from asyncio import timeout
 
-from flask import request, render_template
+from flask import request, render_template, jsonify
 import core
 from flask_caching import Cache
 
@@ -65,4 +65,4 @@ def register_routes(app, db, cache):
 
         result = core.syncronizeCards(req, cache)
         print("OVO JE TIP: ", type(result))
-        return result
+        return jsonify(result)
