@@ -471,14 +471,12 @@ def syncronizeCards(req, cache):
             # take the checklist source ID from the webhook
             idChecklistSource = action['data']['checklist']['id']
 
-            # first check the child card
-            for _card in copied:
-                response = createChecklist(cardID= _card.mirror_card_id, idChecklistSource= idChecklistSource)
-                responses.append(response)
+            identifier = action['id']
+            cache.set(identifier, True, 180)
 
-            # check the parent card
-            for _card in isCopyOf:
-                response = createChecklist(cardID= _card.original_card_id, idChecklistSource= idChecklistSource)
+            # first check the child card
+            for _card in affectedCards:
+                response = createChecklist(cardID= _card, idChecklistSource= idChecklistSource, identifier= identifier)
                 responses.append(response)
 
             return responses
@@ -601,13 +599,12 @@ def createWebhook(cardID):
     return response.json()
 
 
-def createChecklist(cardID, name=None, pos=None, idChecklistSource=None):
+def createChecklist(cardID, name=None, pos=None, idChecklistSource=None, identifier=None):
 
     params = locals()
-    unique_id = hashlib.sha256(f"{cardID}".encode()).hexdigest()
     headers = {
         "Accept": "application/json",
-        "X-Trello-Client-Identifier": unique_id[:16]
+        "X-Trello-Client-Identifier": identifier
     }
 
     query = {
