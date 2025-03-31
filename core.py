@@ -163,7 +163,7 @@ def getDescendantCards(cardID, db):
     return [row[0] for row in result]
 
 # TODO: Make sure to pass only the database session, not the whole db object
-def getMirroredCards(cardID, db):
+def getMirroredCards(cardID, db, onlyIDs = False):
 
     rootCardID = getRootCard(cardID)
 
@@ -180,7 +180,12 @@ def getMirroredCards(cardID, db):
     for c in descendants:
         mirrors.append(getCard(c))
 
+    if onlyIDs:
+        listOfIDs = []
+        for mirror in mirrors:
+            listOfIDs.append(mirror['id'])
 
+        return listOfIDs
     # TODO: This is now uneccesarry because I get descendant card ID's
     # mirrors = models.Mirror.query.filter_by(original_card_id = rootCardID).all()
 
@@ -304,6 +309,9 @@ def syncronizeCards(req):
 
     changedCardId = model['id']
 
+    affectedCards = getMirroredCards(changedCardId, models.db, onlyIDs=True)
+    print("this is only ids: ", affectedCards)
+
     # get mirrored cards for the changed card
     copied = models.Mirror.query.filter_by(original_card_id=changedCardId).all()
     # gets the ID of the "child" card of the current card
@@ -319,14 +327,10 @@ def syncronizeCards(req):
     if action["type"] == 'updateCard':
 
         if action['display']['translationKey'] == 'action_renamed_card':
-            # first check the child card
-            for _card in copied:
-                response = updateCard(_card.mirror_card_id, name=model['name'])
-                responses.append(response)
 
             # check the parent card
-            for _card in isCopyOf:
-                response = updateCard(_card.original_card_id, name=model['name'])
+            for _cardID in affectedCards:
+                response = updateCard(_cardID, name=model['name'])
                 responses.append(response)
 
             return responses
