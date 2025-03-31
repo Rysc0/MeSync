@@ -474,6 +474,7 @@ def syncronizeCards(req, cache):
             identifier = action['id']
             cache.set(identifier, True, 180)
 
+
             # first check the child card
             for _card in affectedCards:
                 response = createChecklist(cardID= _card, idChecklistSource= idChecklistSource, identifier= identifier)
@@ -623,5 +624,5 @@ def createChecklist(cardID, name=None, pos=None, idChecklistSource=None, identif
         params=query
     )
 
-    print(response.json)
-    return response.json
+    print(response.json())
+    return response.json()
