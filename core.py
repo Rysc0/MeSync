@@ -498,6 +498,7 @@ def syncronizeCards(req, cache):
 
             for _card in affectedCards:
                 response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'], idenfitier= identifier)
+                #TODO: Write the comment to the database
                 responses.append(response)
 
             return responses
@@ -505,7 +506,6 @@ def syncronizeCards(req, cache):
     
     if action['type'] == 'updateComment':
 
-        changedCommentID = action['data']['action']['id']
         commentNewText = action['data']['action']['text']
         commentOldText = action['data']['old']['text']
 
@@ -516,12 +516,32 @@ def syncronizeCards(req, cache):
             # for each card find a proper comment that needs updating
             _comments = getComments(cardID=_card, filter='commentCard')
 
+            # find comment/action id
             _obsoleteCommentID = [x['id'] for x in _comments if x['data']['text'] == commentOldText][0]
 
             response = updateComment(cardID=_card, commentID=_obsoleteCommentID, text=commentNewText, identifier=identifier)
+            #TODO: Write the update to the database
             responses.append(response)
 
         return responses
+
+
+    if action['type'] == 'deleteComment':
+
+        #TODO: Get comment from the database, find the same comment on other cards and then delete
+        # on each card and then from the database
+        commentoRemoveId = action['data']['action']['id']
+        cardCommentIsOn = action['data']['card']['id']
+
+        identifier = action['id']
+        cache.set(identifier, True, 300)
+
+        for _card in affectedCards:
+            # for each card find a proper comment that needs updating
+            _comments = getComments(cardID=_card, filter='commentCard')
+
+            # find comment/action id
+            _obsoleteCommentID = ''
 
 
 
@@ -606,6 +626,24 @@ def updateComment(cardID, commentID, text, identifier):
         "PUT",
         url,
         headers=headers,
+        params=query
+    )
+
+    print(response.text)
+    return response.json()
+
+
+def deleteComment(cardID, commentID):
+    url = "https://api.trello.com/1/cards/{}/actions/{}/comments".format(cardID, commentID)
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "DELETE",
+        url,
         params=query
     )
 
