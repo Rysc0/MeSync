@@ -295,6 +295,30 @@ def createMirrorCard(listID, idCardSource):
 
     return response.json()
 
+
+def getComments(cardID, filter):
+    url = "https://api.trello.com/1/cards/{}/actions".format(cardID)
+
+    headers = {
+        "Accept": "application/json"
+    }
+
+    query = {
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "GET",
+        url,
+        headers=headers,
+        params=query
+    )
+
+    print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+    return response.json()
+
+
 def syncronizeCards(req, cache):
 
     action = req["action"]
@@ -482,13 +506,19 @@ def syncronizeCards(req, cache):
     if action['type'] == 'updateComment':
 
         changedCommentID = action['data']['action']['id']
-        commentText = action['data']['action']['text']
+        commentNewText = action['data']['action']['text']
+        commentOldText = action['data']['old']['text']
 
         identifier = action['id']
         cache.set(identifier, True, 300)
 
         for _card in affectedCards:
-            response = updateComment(cardID=changedCardId, commentID=changedCommentID, text=commentText, identifier=identifier)
+            # for each card find a proper comment that needs updating
+            _comments = getComments(cardID=_card, filter='commentCard')
+
+            _obsoleteCommentID = [x['id'] for x in _comments if x['data']['text'] == commentOldText][0]
+
+            response = updateComment(cardID=_card, commentID=_obsoleteCommentID, text=commentNewText, identifier=identifier)
             responses.append(response)
 
         return responses
