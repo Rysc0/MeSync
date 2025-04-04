@@ -466,7 +466,6 @@ def syncronizeCards(req, cache):
 
 
 
-    # TODO: Comments will be updated later
     if action['type'] == 'commentCard':
         if action['display']['translationKey'] == 'action_comment_on_card':
 
@@ -481,8 +480,20 @@ def syncronizeCards(req, cache):
 
     
     if action['type'] == 'updateComment':
-        commentID = action['data']['action']['id']
+
+        changedCommentID = action['data']['action']['id']
         commentText = action['data']['action']['text']
+
+        identifier = action['id']
+        cache.set(identifier, True, 300)
+
+        for _card in affectedCards:
+            response = updateComment(cardID=changedCardId, commentID=changedCommentID, text=commentText, identifier=identifier)
+            responses.append(response)
+
+        return responses
+
+
 
 
 
@@ -544,6 +555,33 @@ def addCommentToCard(cardID, comment, idenfitier):
 
     print("Added comment")
     return response.json()
+
+
+
+def updateComment(cardID, commentID, text, identifier):
+    url = "https://api.trello.com/1/cards/{}/actions/{}/comments".format(cardID, commentID)
+
+    headers = {
+        "Accept": "application/json",
+        "X-Trello-Client-Identifier": identifier
+    }
+
+    query = {
+        'text': text,
+        'key': API_KEY,
+        'token': TOKEN
+    }
+
+    response = requests.request(
+        "PUT",
+        url,
+        headers=headers,
+        params=query
+    )
+
+    print(response.text)
+    return response.json()
+
 
 def createWebhook(cardID):
     url = "https://api.trello.com/1/webhooks/"
