@@ -474,7 +474,7 @@ def syncronizeCards(req, cache):
             cache.set(identifier, True, 300)
 
             for _card in affectedCards:
-                response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'])
+                response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'], idenfitier= identifier)
                 responses.append(response)
 
             return responses
@@ -521,11 +521,12 @@ def updateCard(id, name=None, desc=None, closed=None, idMembers=None, idAttachme
 
 
 
-def addCommentToCard(cardID, comment):
+def addCommentToCard(cardID, comment, idenfitier):
     url = "https://api.trello.com/1/cards/{}/actions/comments".format(cardID)
 
     headers = {
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "X-Trello-Client-Identifier": idenfitier
     }
 
     query = {
