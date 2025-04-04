@@ -470,30 +470,15 @@ def syncronizeCards(req, cache):
     if action['type'] == 'commentCard':
         if action['display']['translationKey'] == 'action_comment_on_card':
 
-            _database['cards'][changedCardId]['comments'].append(action['id'])
-            with open('database.json', 'w') as file:
-                json.dump(_database, file, indent=4)
+            identifier = action['id']
+            cache.set(identifier, True, 300)
 
-            # get the card that comment was made in
-            numberOfComments = int(model['badges']['comments'])
-            # get the numbers for mirrored cards
-            cardsToUpdate = []
-            for cardId in mirroredCardsList:
-                _card = getCard(cardId)
-                if int(_card['badges']['comments']) != numberOfComments:
-                    cardsToUpdate.append(cardId)
-
-            if len(cardsToUpdate) == 0:
-                print('COMMENTS UP TO DATE')
-                return {'Error': "Comments already up to date. Same number of comments on all cards"}
-
-            for cardId in cardsToUpdate:
-                response = addCommentToCard(cardID=cardId, comment=action['display']['entities']['comment']['text'])
-                _database['cards'][cardId]['comments'].append(response['id'])
-                with open('database.json', 'w') as file:
-                    json.dump(_database, file, indent=4)
+            for _card in affectedCards:
+                response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'])
                 responses.append(response)
+
             return responses
+
     
     if action['type'] == 'updateComment':
         commentID = action['data']['action']['id']
