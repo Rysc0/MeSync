@@ -502,7 +502,7 @@ def syncronizeCards(req, cache):
 
             for _card in affectedCards:
                 response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'], idenfitier= identifier)
-                #TODO: Write the comment to the database
+
                 new_comment = models.Comment(id=response['id'], card_id=response['data']['idCard'], content=response['data']['text'], user_id=response['idMemberCreator'])
                 models.db.session.add(new_comment)
                 models.db.session.commit()
@@ -518,6 +518,9 @@ def syncronizeCards(req, cache):
 
         identifier = action['id']
         cache.set(identifier, True, 300)
+
+        models.Comment.query(id=changedCardId).update({'content': f"{commentNewText}"})
+        models.db.session.commit()
 
         for _card in affectedCards:
             # for each card find a proper comment that needs updating
