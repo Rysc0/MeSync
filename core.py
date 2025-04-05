@@ -559,7 +559,7 @@ def syncronizeCards(req, cache):
             # find comment/action id
             _obsoleteCommentID = [x['id'] for x in _comments if x['data']['text'] == removedComment.content][0]
 
-            response = deleteComment(cardID=_card, commentID=_obsoleteCommentID)
+            response = deleteComment(cardID=_card, commentID=_obsoleteCommentID, identifier=identifier)
             #TODO: delete from database
             responses.append(response)
 
@@ -655,8 +655,13 @@ def updateComment(cardID, commentID, text, identifier):
     return response.json()
 
 
-def deleteComment(cardID, commentID):
+def deleteComment(cardID, commentID, identifier):
     url = "https://api.trello.com/1/cards/{}/actions/{}/comments".format(cardID, commentID)
+
+    headers = {
+        "Accept": "application/json",
+        "X-Trello-Client-Identifier": identifier
+    }
 
     query = {
         'key': API_KEY,
@@ -666,6 +671,7 @@ def deleteComment(cardID, commentID):
     response = requests.request(
         "DELETE",
         url,
+        headers=headers,
         params=query
     )
 
