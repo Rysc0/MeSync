@@ -499,6 +499,9 @@ def syncronizeCards(req, cache):
             for _card in affectedCards:
                 response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'], idenfitier= identifier)
                 #TODO: Write the comment to the database
+                new_comment = models.Comment(id=response['id'], card_id=response['data']['idCard'], content=response['data']['text'], user_id=response['idMemberCreator'])
+                models.db.session.add(new_comment)
+                models.db.session.commit()
                 responses.append(response)
 
             return responses
@@ -521,6 +524,8 @@ def syncronizeCards(req, cache):
 
             response = updateComment(cardID=_card, commentID=_obsoleteCommentID, text=commentNewText, identifier=identifier)
             #TODO: Write the update to the database
+            models.Comment.query(id=_obsoleteCommentID).update({'content': f"{commentNewText}"})
+            models.db.session.commit()
             responses.append(response)
 
         return responses
