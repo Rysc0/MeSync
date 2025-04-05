@@ -496,6 +496,10 @@ def syncronizeCards(req, cache):
             identifier = action['id']
             cache.set(identifier, True, 300)
 
+            initial_comment = models.Comment(id=action['id'], card_id=changedCardId, content=action['data']['idCard'], user_id=action['idMemberCreator'])
+            models.db.session.add(initial_comment)
+            models.db.session.commit()
+
             for _card in affectedCards:
                 response = addCommentToCard(cardID=_card, comment=action['display']['entities']['comment']['text'], idenfitier= identifier)
                 #TODO: Write the comment to the database
