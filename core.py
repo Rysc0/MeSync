@@ -519,7 +519,7 @@ def syncronizeCards(req, cache):
         identifier = action['id']
         cache.set(identifier, True, 300)
 
-        models.Comment.query(id=changedCardId).update({'content': f"{commentNewText}"})
+        models.Comment.query.filter_by(id=action['data']['action']['id']).update({'content': commentNewText})
         models.db.session.commit()
 
         for _card in affectedCards:
