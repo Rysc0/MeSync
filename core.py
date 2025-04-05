@@ -547,7 +547,7 @@ def syncronizeCards(req, cache):
         identifier = action['id']
         cache.set(identifier, True, 300)
 
-        removedComment = models.Comment.query.get(commentRemovedId)
+        removedComment = models.Comment.query.filter_by(id=commentRemovedId).first()
 
 
         for _card in affectedCards:
