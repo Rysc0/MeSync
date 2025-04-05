@@ -531,7 +531,7 @@ def syncronizeCards(req, cache):
 
             response = updateComment(cardID=_card, commentID=_obsoleteCommentID, text=commentNewText, identifier=identifier)
             #TODO: Write the update to the database
-            models.Comment.query(id=_obsoleteCommentID).update({'content': f"{commentNewText}"})
+            models.Comment.query.filter_by(id=_obsoleteCommentID).update({'content': f"{commentNewText}"})
             models.db.session.commit()
             responses.append(response)
 
