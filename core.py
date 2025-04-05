@@ -530,7 +530,6 @@ def syncronizeCards(req, cache):
             _obsoleteCommentID = [x['id'] for x in _comments if x['data']['text'] == commentOldText][0]
 
             response = updateComment(cardID=_card, commentID=_obsoleteCommentID, text=commentNewText, identifier=identifier)
-            #TODO: Write the update to the database
             models.Comment.query.filter_by(id=_obsoleteCommentID).update({'content': f"{commentNewText}"})
             models.db.session.commit()
             responses.append(response)
@@ -542,18 +541,27 @@ def syncronizeCards(req, cache):
 
         #TODO: Get comment from the database, find the same comment on other cards and then delete
         # on each card and then from the database
-        commentoRemoveId = action['data']['action']['id']
-        cardCommentIsOn = action['data']['card']['id']
+        commentRemovedId = action['data']['action']['id']
+        cardCommentWasOn = action['data']['card']['id']
 
         identifier = action['id']
         cache.set(identifier, True, 300)
+
+        removedComment = models.Comment.query.filter_by(id=commentRemovedId)
+
 
         for _card in affectedCards:
             # for each card find a proper comment that needs updating
             _comments = getComments(cardID=_card, filter='commentCard')
 
             # find comment/action id
-            _obsoleteCommentID = ''
+            _obsoleteCommentID = [x['id'] for x in _comments if x['data']['text'] == removedComment.content][0]
+
+            response = deleteComment(cardID=_card, commentID=_obsoleteCommentID)
+            #TODO: delete from database
+            responses.append(response)
+
+            return responses
 
 
 
