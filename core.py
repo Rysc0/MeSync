@@ -549,6 +549,8 @@ def syncronizeCards(req, cache):
 
         removedComment = models.Comment.query.filter_by(id=commentRemovedId).first()
 
+        print("AFFECTED CARDS: ", affectedCards)
+
 
         for _card in affectedCards:
             # for each card find a proper comment that needs updating
